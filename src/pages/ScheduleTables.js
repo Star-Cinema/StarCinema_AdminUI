@@ -36,9 +36,19 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+
+
+// import * as Yup from "yup";
+
+// const schema = Yup.object().shape({
+//     filmId: Yup.string().required("Film is required"),
+//     roomId: Yup.string().required("Room is required"),
+//     startTime: Yup.date().required("Start time is required"),
+//     price: Yup.number().required("Price is required").min(0, "Price must be greater than or equal to 0"),
+// });
+
 const { Title } = Typography;
 const Option = Select.Option;
-
 
 
 
@@ -104,6 +114,7 @@ function convertDateTime(dateTimeStr) {
 
 function SchedulesTable() {
     const [form] = Form.useForm();
+    const { getFieldDecorator } = form;
     const [dataSource, setDataSource] = useState([]);
     const [loading, setLoading] = useState(false);
     const [totalItem, setTotalItem] = useState(0);
@@ -233,15 +244,23 @@ function SchedulesTable() {
                                 <>
                                     <EditTwoTone
                                         onClick={() => {
-                                            setIsShowForm(true);
                                             setIsEditing(true);
                                             setFormData({
                                                 id: item.id,
                                                 filmId: item.filmId,
                                                 roomId: item.roomId,
-                                                price: item.ticket.price,
-                                                startTime: new Date(item.startTime)
+                                                price: Number(item.ticket.price),
+                                                startTime: item.startTime,
                                             })
+                                            setIsShowForm(true);
+                                            form.setFieldsValue({
+                                                id: item.id,
+                                                filmId: item.filmId,
+                                                roomId: item.roomId,
+                                                startTime: moment(new Date(item.startTime), 'DD/MM/YYYY HH:mm'),
+                                                price: Number(item.ticket.price)
+                                            })
+                                            console.log(formData)
                                         }} style={{ fontSize: 18, cursor: "pointer" }}></EditTwoTone>
                                     <DeleteOutlined onClick={() => onDelete(item.id)} style={{ fontSize: 18, color: "red", marginLeft: 12, cursor: "pointer" }}></DeleteOutlined>
                                 </>
@@ -279,8 +298,19 @@ function SchedulesTable() {
                         >
                             <div style={HeaderTableStyles}>
                                 <span style={{ fontSize: 20, fontWeight: 600 }}>List schedules</span>
-                                <Button onClick={() => {resetFormData(); setIsShowForm(true); setIsAdding(true);}}
-                                 style={{ background: "#237804", color: "#ffffff" }}>
+                                <Button onClick={() => { 
+                                    resetFormData(); 
+                                    setIsShowForm(true); 
+                                    setIsAdding(true); 
+                                    form.setFieldsValue({
+                                        id: 0,
+                                        filmId: '',
+                                        roomId: '',
+                                        startTime: moment(new Date(), 'DD/MM/YYYY HH:mm'),
+                                        price: 0
+                                    })
+                                }}
+                                    style={{ background: "#237804", color: "#ffffff" }}>
                                     <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
                                     Add</Button>
                             </div>
@@ -304,7 +334,7 @@ function SchedulesTable() {
                                     className="ant-border-space"
                                 />
                                 <Modal
-                                    title= {isAdding ? "Add Schedule" : "Edit Schedule"}
+                                    title={isAdding ? "Add Schedule" : "Edit Schedule"}
                                     visible={isShowForm}
                                     okText="Submit"
                                     onCancel={() => { setIsShowForm(false); setIsAdding(false); setIsEditing(false) }}
@@ -316,13 +346,17 @@ function SchedulesTable() {
                                 >
                                     <Form
                                         form={form}
-                                        labelCol={{ span: 4 }}
-                                        wrapperCol={{ span: 19 }}
-                                        layout="horizontal">
+                                        labelCol={{ span: 5 }}
+                                        wrapperCol={{ span: 18 }}
+                                        layout="horizontal"
+                                    >
                                         {isEditing && <Form.Item label="Id" rules={[{ required: true }]}>
-                                            <Input name="Id" value={formData?.id} disabled />
-                                        </Form.Item> }
-                                        <Form.Item label="Film"
+                                            <Input name="Id" 
+                                                value={formData?.id} 
+                                                disabled 
+                                            />
+                                        </Form.Item>}
+                                        <Form.Item name="filmId" label="Film"
 
                                             rules={[
                                                 { required: true, message: "Select the film" },
@@ -339,7 +373,6 @@ function SchedulesTable() {
                                         >
                                             <Select name="filmId"
                                                 placeholder="Select a film"
-                                                value={formData?.filmId}
                                                 onChange={(value) => setFormData({ ...formData, filmId: value })}
                                             >
                                                 {dataFilm?.map(item => (
@@ -350,7 +383,7 @@ function SchedulesTable() {
                                             </Select>
                                         </Form.Item>
 
-                                        <Form.Item label="Room"
+                                        <Form.Item name="roomId" label="Room"
 
                                             rules={[
                                                 { required: true, message: "Select the room" },
@@ -367,7 +400,6 @@ function SchedulesTable() {
                                         >
                                             <Select name="roomId"
                                                 placeholder="Select a room"
-                                                value={formData?.roomId}
                                                 onChange={(value) => setFormData({ ...formData, roomId: value })}
                                             >
                                                 {dataRoom?.map(item => (
@@ -377,10 +409,9 @@ function SchedulesTable() {
                                                 ))}
                                             </Select>
                                         </Form.Item>
-                                        <Form.Item label="Start Time" rules={[{ required: true }]}>
+                                        <Form.Item name="startTime" label="Start Time" rules={[{ required: true, message:"Start time is required" }]}>
                                             <DatePicker
                                                 name="startTime"
-                                                defaultValue={moment(formData.startTime, 'DD/MM/YYYY HH:mm')}
                                                 format={'DD/MM/YYYY HH:mm'}
                                                 showTime
                                                 disabledDate={(current) => current.isBefore(moment())}
@@ -394,9 +425,35 @@ function SchedulesTable() {
                                                 }}
                                             />
                                         </Form.Item>
-                                        <Form.Item label="Price" rules={[{ required: true }]}>
-                                            <Input name="price" value={formData?.price} type="number" onChange={handleChange}/>
+                                        <Form.Item
+                                            name="price"
+                                            label="Price"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: "Price is required",
+                                                },
+                                                {
+                                                    type: "number",
+                                                    min: 0,
+                                                    max: 100000000,
+                                                    message: "Price must be greater than or equal to 0",
+                                                },
+                                            ]}
+                                        >
+                                            <Input
+                                                name="price"
+                                                type="number"
+                                                onChange={(event) => {
+                                                    const priceValue = parseFloat(event.target.value);
+                                                    console.log(priceValue, typeof priceValue);
+                                                    if (!isNaN(priceValue)) {
+                                                        setFormData({ ...formData, price: priceValue });
+                                                    }
+                                                }}
+                                            />
                                         </Form.Item>
+                                        
                                     </Form>
                                 </Modal>
                             </div>
