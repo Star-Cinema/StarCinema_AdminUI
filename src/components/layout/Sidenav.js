@@ -193,6 +193,19 @@ function Sidenav({ color }) {
             <span className="label">Schedules</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="9">
+          <NavLink to="/UploadImage">
+            <span
+              className="icon"
+              style={{
+                background: page === "tables" ? color : "",
+              }}
+            >
+              {tables}
+            </span>
+            <span className="label">Upload Image</span>
+          </NavLink>
+        </Menu.Item>
         <Menu.Item key="3">
           <NavLink to="/billing">
             <span

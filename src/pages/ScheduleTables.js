@@ -25,17 +25,22 @@ import {
     Input,
     Form,
     DatePicker,
-    Select
+    Select,
+    Space
 } from "antd";
 
+import '../assets/styles/schedulePage.css';
 
 
-import { DeleteFilled, DeleteOutlined, DeleteTwoTone, EditFilled, EditTwoTone, ToTopOutlined } from "@ant-design/icons";
+
+import { DeleteFilled, DeleteOutlined, DeleteTwoTone, EditFilled, EditTwoTone, SearchOutlined, ToTopOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+
+const { Search } = Input;
 
 
 // import * as Yup from "yup";
@@ -62,6 +67,29 @@ const HeaderTableStyles = {
     borderBottom: "1px solid #f0f0f0",
     borderRadius: "2px 2px 0 0",
 
+}
+
+const styleSearchTextbox = {
+    padding: "8px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    flex: 1
+}
+
+const styleSearchDiv = {
+    position: "relative",
+    marginLeft: 8,
+    width: 24,
+    height: 24
+}
+
+const styleSearchIcon = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    color: "#007bff",
+    cursor: "pointer"
 }
 
 // table code start
@@ -133,6 +161,24 @@ function SchedulesTable() {
         startTime: new Date(),
     });
     const onChange = (e) => console.log(`radio checked:${e.target.value}`);
+    const [selectedFilm, setSelectedFilm] = useState('');
+    const [selectedRoom, setSelectedRoom] = useState('');
+    const [selectedDate, setSelectedDate] = useState();
+
+
+    const handleFilmChange = (value) => {
+        setSelectedFilm(value);
+    };
+
+    const handleRoomChange = (value) => {
+        setSelectedRoom(value);
+    };
+
+    const handleSelectDateTime = (date, dateString) => {
+        const parts = dateString.split('/');
+        const convertedDate = parts.reverse().join('-');
+        setSelectedDate(convertedDate);
+    }
 
     const resetFormData = () => {
         setFormData({
@@ -156,18 +202,19 @@ function SchedulesTable() {
 
     useEffect(() => {
         setPage(1);
-    }, [pageSize])
+        getRecords();
+    }, [pageSize, selectedFilm, selectedRoom, selectedDate])
 
     useEffect(() => {
-        getRecords(page, pageSize);
-    }, [page, pageSize])
+        getRecords();
+    }, [page])
 
-    const handleChange = (event) => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        setFormData({ ...formData, [name]: value });
-    };
+    // const handleChange = (event) => {
+    //     const target = event.target;
+    //     const value = target.type === 'checkbox' ? target.checked : target.value;
+    //     const name = target.name;
+    //     setFormData({ ...formData, [name]: value });
+    // };
 
     function convertToISO8601(dateTimeString) {
         const [dateString, timeString] = dateTimeString.split(' ');
@@ -196,7 +243,7 @@ function SchedulesTable() {
             cancelText: 'No',
             onOk: async () => {
                 await axios.delete(`https://localhost:7113/api/Schedules/${id}`);
-                getRecords(page, pageSize);
+                getRecords();
             }
         });
     }
@@ -204,17 +251,21 @@ function SchedulesTable() {
         setIsShowForm(false)
         setIsAdding(false);
         await axios.post(`https://localhost:7113/api/Schedules`, formData);
-        getRecords(page, pageSize);
+        getRecords();
     };
     const onEdit = async () => {
         setIsShowForm(false)
         setIsEditing(false);
         await axios.put(`https://localhost:7113/api/Schedules/${formData.id}`, formData);
-        getRecords(page, pageSize);
+        getRecords();
     };
-    const getRecords = (page, pageSize) => {
+    const getRecords = () => {
         setLoading(true);
-        axios.get(`https://localhost:7113/api/Schedules?page=${page - 1}&limit=${pageSize}`)
+        let query = `https://localhost:7113/api/Schedules?page=${page - 1}&limit=${pageSize}`;
+        selectedFilm && (query += `&filmId=${selectedFilm}`);
+        selectedRoom && (query += `&roomId=${selectedRoom}`);
+        selectedDate && (query += `&date=${selectedDate}`);
+        axios.get(query)
             .then((res) => {
                 const data = [];
                 if (res.data != null) {
@@ -287,32 +338,88 @@ function SchedulesTable() {
                         <Card
                             bordered={false}
                             className="criclebox tablespace mb-24"
-                        // extra={
-                        //   <>
-                        //     <Radio.Group onChange={onChange} defaultValue="a">
-                        //       <Radio.Button value="a">All</Radio.Button>
-                        //       <Radio.Button value="b">ONLINE</Radio.Button>
-                        //     </Radio.Group>
-                        //   </>
-                        // }
                         >
+
                             <div style={HeaderTableStyles}>
                                 <span style={{ fontSize: 20, fontWeight: 600 }}>List schedules</span>
-                                <Button onClick={() => { 
-                                    resetFormData(); 
-                                    setIsShowForm(true); 
-                                    setIsAdding(true); 
-                                    form.setFieldsValue({
-                                        id: 0,
-                                        filmId: '',
-                                        roomId: '',
-                                        startTime: moment(new Date(), 'DD/MM/YYYY HH:mm'),
-                                        price: 0
-                                    })
-                                }}
-                                    style={{ background: "#237804", color: "#ffffff" }}>
-                                    <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
-                                    Add</Button>
+                                <Space>
+                                    <div className="filter" style={{ display: "flex", alignItems: "center" }}>
+
+                                        <DatePicker
+                                            name="startTime"
+                                            format={'DD/MM/YYYY'}
+                                            showTime
+                                            onChange={handleSelectDateTime}
+                                            inputReadOnly
+                                            inputStyle={{ color: 'red' }}
+                                            className="searchDateTime"
+                                            style={{
+                                                height: "auto",
+                                                width: "auto",
+                                                borderRadius: "6px",
+                                                fontSize: "14px",
+                                                padding: "8px",
+                                                border: "1px solid #d9d9d9"
+                                            }}
+                                        />
+
+
+
+                                        <Select
+                                            showSearch
+                                            placeholder="Select Film"
+                                            allowClear
+                                            style={{ width: 300, marginLeft: 16 }}
+                                            onChange={handleFilmChange}
+                                            optionFilterProp="children"
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                            }
+                                            value={selectedFilm ? selectedFilm : "Select Film"}
+                                        >
+                                            {dataFilm?.map((film) => (
+                                                <Option value={film.id} key={film.id} label={film.name}>
+                                                    {film.name}
+                                                </Option>
+                                            ))}
+                                        </Select>
+
+                                        <Select
+                                            showSearch
+                                            placeholder="Select Room"
+                                            allowClear
+                                            style={{ width: 150, marginLeft: 16, marginRight: 18 }}
+                                            onChange={handleRoomChange}
+                                            value={selectedRoom ? selectedRoom : "Select Room"}
+                                            optionFilterProp="children"
+                                            filterOption={(input, option) =>
+                                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                            }
+                                        >
+                                            {dataRoom?.map((room) => (
+                                                <Option value={room.id} key={room.id} label={room.name}>
+                                                    {room.name}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    <Button onClick={() => {
+                                        resetFormData();
+                                        setIsShowForm(true);
+                                        setIsAdding(true);
+                                        form.setFieldsValue({
+                                            id: 0,
+                                            filmId: '',
+                                            roomId: '',
+                                            startTime: moment(new Date(), 'DD/MM/YYYY HH:mm'),
+                                            price: 0
+                                        })
+                                    }}
+                                        style={{ background: "#237804", color: "#ffffff" }}>
+                                        <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
+                                        Add</Button>
+                                </Space>
+
                             </div>
                             <div className="table-responsive">
                                 <Table
@@ -351,9 +458,9 @@ function SchedulesTable() {
                                         layout="horizontal"
                                     >
                                         {isEditing && <Form.Item label="Id" rules={[{ required: true }]}>
-                                            <Input name="Id" 
-                                                value={formData?.id} 
-                                                disabled 
+                                            <Input name="Id"
+                                                value={formData?.id}
+                                                disabled
                                             />
                                         </Form.Item>}
                                         <Form.Item name="filmId" label="Film"
@@ -409,7 +516,7 @@ function SchedulesTable() {
                                                 ))}
                                             </Select>
                                         </Form.Item>
-                                        <Form.Item name="startTime" label="Start Time" rules={[{ required: true, message:"Start time is required" }]}>
+                                        <Form.Item name="startTime" label="Start Time" rules={[{ required: true, message: "Start time is required" }]}>
                                             <DatePicker
                                                 name="startTime"
                                                 format={'DD/MM/YYYY HH:mm'}
@@ -453,7 +560,7 @@ function SchedulesTable() {
                                                 }}
                                             />
                                         </Form.Item>
-                                        
+
                                     </Form>
                                 </Modal>
                             </div>
