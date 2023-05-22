@@ -344,80 +344,89 @@ function SchedulesTable() {
                                 <span style={{ fontSize: 20, fontWeight: 600 }}>List schedules</span>
                                 <Space>
                                     <div className="filter" style={{ display: "flex", alignItems: "center" }}>
+                                        <div className="filter-item">
+                                            <div className="filter-item-label">DATE</div>
+                                            <DatePicker
+                                                name="startTime"
+                                                format={'DD/MM/YYYY'}
+                                                showTime
+                                                onChange={handleSelectDateTime}
+                                                inputReadOnly
+                                                inputStyle={{ color: 'red' }}
+                                                className="searchDateTime"
+                                                style={{
+                                                    height: "auto",
+                                                    width: "auto",
+                                                    borderRadius: "6px",
+                                                    fontSize: "14px",
+                                                    padding: "8px",
+                                                    border: "1px solid #d9d9d9"
+                                                }}
+                                            />
+                                        </div>
 
-                                        <DatePicker
-                                            name="startTime"
-                                            format={'DD/MM/YYYY'}
-                                            showTime
-                                            onChange={handleSelectDateTime}
-                                            inputReadOnly
-                                            inputStyle={{ color: 'red' }}
-                                            className="searchDateTime"
-                                            style={{
-                                                height: "auto",
-                                                width: "auto",
-                                                borderRadius: "6px",
-                                                fontSize: "14px",
-                                                padding: "8px",
-                                                border: "1px solid #d9d9d9"
+                                        <div className="filter-item">
+                                            <div className="filter-item-label">FILM</div>
+                                            <Select
+                                                showSearch
+                                                placeholder="Select Film"
+                                                allowClear
+                                                style={{ width: 300 }}
+                                                onChange={handleFilmChange}
+                                                optionFilterProp="children"
+                                                filterOption={(input, option) =>
+                                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                                }
+                                                value={selectedFilm ? selectedFilm : "Select Film"}
+                                            >
+                                                {dataFilm?.map((film) => (
+                                                    <Option value={film.id} key={film.id} label={film.name}>
+                                                        {film.name}
+                                                    </Option>
+                                                ))}
+                                            </Select>
+                                        </div>
+                                        <div className="filter-item">
+                                            <div className="filter-item-label">ROOM</div>
+                                            <Select
+                                                showSearch
+                                                placeholder="Select Room"
+                                                allowClear
+                                                style={{ width: 150, marginRight: 18 }}
+                                                onChange={handleRoomChange}
+                                                value={selectedRoom ? selectedRoom : "Select Room"}
+                                                optionFilterProp="children"
+                                                filterOption={(input, option) =>
+                                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                                }
+                                            >
+                                                {dataRoom?.map((room) => (
+                                                    <Option value={room.id} key={room.id} label={room.name}>
+                                                        {room.name}
+                                                    </Option>
+                                                ))}
+                                            </Select>
+                                        </div>
+                                        <div className="filter-item">
+                                            <div className="filter-item-label hidden">Add</div>
+                                            <Button onClick={() => {
+                                                resetFormData();
+                                                setIsShowForm(true);
+                                                setIsAdding(true);
+                                                form.setFieldsValue({
+                                                    id: 0,
+                                                    filmId: '',
+                                                    roomId: '',
+                                                    startTime: moment(new Date(), 'DD/MM/YYYY HH:mm'),
+                                                    price: 0
+                                                })
                                             }}
-                                        />
-
-
-
-                                        <Select
-                                            showSearch
-                                            placeholder="Select Film"
-                                            allowClear
-                                            style={{ width: 300, marginLeft: 16 }}
-                                            onChange={handleFilmChange}
-                                            optionFilterProp="children"
-                                            filterOption={(input, option) =>
-                                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                            }
-                                            value={selectedFilm ? selectedFilm : "Select Film"}
-                                        >
-                                            {dataFilm?.map((film) => (
-                                                <Option value={film.id} key={film.id} label={film.name}>
-                                                    {film.name}
-                                                </Option>
-                                            ))}
-                                        </Select>
-
-                                        <Select
-                                            showSearch
-                                            placeholder="Select Room"
-                                            allowClear
-                                            style={{ width: 150, marginLeft: 16, marginRight: 18 }}
-                                            onChange={handleRoomChange}
-                                            value={selectedRoom ? selectedRoom : "Select Room"}
-                                            optionFilterProp="children"
-                                            filterOption={(input, option) =>
-                                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                            }
-                                        >
-                                            {dataRoom?.map((room) => (
-                                                <Option value={room.id} key={room.id} label={room.name}>
-                                                    {room.name}
-                                                </Option>
-                                            ))}
-                                        </Select>
+                                                style={{ background: "#237804", color: "#ffffff" }}>
+                                                <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
+                                                Add
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <Button onClick={() => {
-                                        resetFormData();
-                                        setIsShowForm(true);
-                                        setIsAdding(true);
-                                        form.setFieldsValue({
-                                            id: 0,
-                                            filmId: '',
-                                            roomId: '',
-                                            startTime: moment(new Date(), 'DD/MM/YYYY HH:mm'),
-                                            price: 0
-                                        })
-                                    }}
-                                        style={{ background: "#237804", color: "#ffffff" }}>
-                                        <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
-                                        Add</Button>
                                 </Space>
 
                             </div>
