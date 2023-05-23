@@ -21,23 +21,36 @@ import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import Users from "./pages/Users";
+import UserDetails from "./pages/UserDetails";
+import './assets/styles/public.css'
 
 function App() {
+  // console.log(sessionStorage.getItem("token"))
+  if(sessionStorage.getItem("token")?.length > 10)
   return (
     <div className="App">
       <Switch>
         <Route path="/sign-up" exact component={SignUp} />
-        <Route path="/sign-in" exact component={SignIn} />
+        {/* <Route path="/sign-in" exact component={SignIn} /> */}
         <Main>
           <Route exact path="/" component={Home} />
           <Route exact path="/dashboard" component={Home} />
+
           <Route exact path="/schedules" component={SchedulesTable} />
+
+          <Route exact path="/users" component={Users} />
+          <Route exact path="/users/:id" component={UserDetails} />
+
           <Route exact path="/billing" component={Billing} />
           <Route exact path="/profile" component={Profile} />
         </Main>
       </Switch>
     </div>
-  );
+  )
+  else return(
+    <SignIn/>
+  )
 }
 
 export default App;

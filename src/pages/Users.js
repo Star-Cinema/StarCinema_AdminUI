@@ -1,0 +1,348 @@
+import {
+    Row,
+    Col,
+    Card,
+    Radio,
+    Table,
+    Upload,
+    message,
+    Progress,
+    Button,
+    Avatar,
+    Typography,
+    Popconfirm,
+    Modal,
+    Form,
+    DatePicker,
+    Checkbox,
+    Input,
+    Select,
+    InputNumber,
+    Pagination,
+    Space,
+} from "antd";
+
+import { DeleteOutlined, EditTwoTone, PlusOutlined, SearchOutlined, ToTopOutlined, UserAddOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+import TextArea from "antd/lib/input/TextArea";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+// import Search from "antd/lib/transfer/search";
+import Search from "antd/lib/input/Search";
+
+const { Title } = Typography;
+const normFile = (e) => {
+    if (Array.isArray(e)) {
+        return e;
+    }
+    return e?.fileList;
+};
+// table code start
+const columns = [
+    {
+        title: "NAME",
+        dataIndex: "name",
+        key: "name",
+        width: "32%",
+    },
+    {
+        title: "ROLE",
+        dataIndex: "role",
+        key: "role",
+    },
+
+    {
+        title: "STATUS",
+        key: "status",
+        dataIndex: "status",
+    },
+    {
+        title: "CREATED",
+        key: "created",
+        dataIndex: "created",
+    },
+    {
+        title: "FUNCTION",
+        key: "function",
+        dataIndex: "function",
+    },
+];
+
+function User() {
+    const history = useHistory()
+    const [page, setPage] = useState(1)
+    const [key, setKey] = useState('')
+    const [loading, setLoading] = useState(true)
+    const [users, setUser] = useState()
+    const [form] = Form.useForm()
+    const [formData, setFormData] = useState({
+        avatar: ""
+    })
+
+    useEffect(() => {
+        fecthData(page,10,key)
+    }, [page])
+
+    const fecthData = async (page = 1, pageSize = 10, key = "", sortBy = "id") => {
+        setLoading(true)
+        var res = await axios.get("https://localhost:7113/api/users?page=" + page + "&pageSize=" + pageSize + "&key=" + key + "&sortBy=" + sortBy)
+        const data = []
+        res.data.data.map((item, index) => (
+            data.push({
+                key: index,
+                name: (
+                    <>
+                        <Avatar.Group>
+                            <Avatar
+                                className="shape-avatar"
+                                shape="square"
+                                size={40}
+                                src={item?.avatar}
+                            ></Avatar>
+                            <div className="avatar-info">
+                                <Title level={5}>{item?.name}</Title>
+                                <p>{item?.email}</p>
+                            </div>
+                        </Avatar.Group>{" "}
+                    </>
+                ),
+                role: (
+                    <>
+                        <div className="author-info">
+                            <Title level={5}>{item?.roleDTO.name}</Title>
+                            {/* <p>Developer</p> */}
+                        </div>
+                    </>
+                ),
+
+                status: (
+                    <>
+                        {
+                            item?.isDelete ?
+                                <Button type="danger" className="tag-primary">
+                                    DENINE
+                                </Button>
+                                :
+                                <Button type="primary" className="tag-primary">
+                                    ACTIVE
+                                </Button>
+                        }
+                        {/* <Button className="tag-badge">{item?.isDelete ? "DENINE" : "ACTIVE"}</Button> */}
+                    </>
+                ),
+                created: (
+                    <>
+                        <div className="ant-employed">
+                            <span>{item?.dob?.slice(0, 10)}</span>
+                        </div>
+                    </>
+                ),
+                function: (
+                    <>
+                        <EditTwoTone
+                            style={{ fontSize: 18, color: "blue", marginLeft: 12, cursor: "pointer" }}
+                            onClick={() => history.push("users/" + item?.id)}
+                        />
+                        <Popconfirm title="Are you sure to delete this service"
+                            onConfirm={() => handleDeleteUser(item?.id)}>
+                            <DeleteOutlined
+                                style={{ fontSize: 18, color: "red", marginLeft: 12, cursor: "pointer" }}
+                            />
+                        </Popconfirm>
+                    </>
+                )
+            })
+        ))
+
+        setUser(data)
+        setLoading(false)
+    }
+
+    const handleDeleteUser = async (id) => {
+        var res = await axios.delete("https://localhost:7113/api/users/" + id)
+        console.log(res.data)
+        if (res?.data?.code == 200) window.location.reload()
+    }
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = async () => {
+        console.log(formData)
+        var res = await axios.post("https://localhost:7113/api/users/create", formData)
+        console.log(res)
+        setIsModalOpen(false);
+
+        window.location.reload()
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleChange = (e) => {
+        if (e.target)
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        else setFormData({ ...formData, ["roleId"]: e })
+    };
+
+    const handleChangeDob = (e) => {
+        setFormData({ ...formData, ['dob']: e });
+    }
+
+    const handleSearch = () => {
+        fecthData(page, 10, key)
+    }
+
+    return (
+        <>
+            <div className="tabled">
+                <Row gutter={[24, 0]}>
+                    <Col xs="24" xl={24}>
+                        <Card
+                            bordered={false}
+                            className="criclebox tablespace mb-24"
+                            title="Users Table"
+                            extra={
+                                <>
+                                    <Space direction="horizontal">
+                                    <div className="search-container">
+                                            <div className="search-input-container">
+                                                <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKey(e.target.value)}/>
+                                            </div>
+                                            <div className="search-button-container">
+                                                <button className="search-button" onClick={handleSearch}>
+                                                    <i className="fas fa-search" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <Button type="primary" onClick={showModal}>
+                                            <UserAddOutlined style={{ fontSize: 18 }} />
+                                            Add
+                                        </Button>
+                                    </Space>
+                                </>
+                            }
+                        >
+                            <div className="table-responsive">
+                                <Table
+                                    columns={columns}
+                                    dataSource={users}
+                                    pagination={false}
+                                    className="ant-border-space"
+                                    loading={loading}
+                                />
+                            </div>
+                        </Card>
+                        <Pagination defaultCurrent={1} total={15} onChange={(page) => setPage(page)} style={{ textAlign: "center" }} />
+                    </Col>
+                </Row>
+
+                <Modal title="Form create user" open={isModalOpen}
+                    onOk={() => {
+                        form.validateFields().then(() => {
+                            handleOk()
+                        });
+                    }}
+                    onCancel={handleCancel} visible={isModalOpen}>
+                    <Form
+                        form={form}
+                        labelCol={{
+                            span: 4,
+                        }}
+                        wrapperCol={{
+                            span: 24,
+                        }}
+                        layout="vertical"
+                    // disabled={componentDisabled}
+                    // style={{
+                    //     maxWidth: 600,
+                    // }}
+                    >
+                        <Form.Item name="Name" label="Name"
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                                {
+                                    type: 'string',
+                                    min: 6,
+                                },
+                            ]}
+                        >
+                            <Input name="name" onChange={handleChange} />
+                        </Form.Item>
+                        <Form.Item name="Email" label="Email"
+                            rules={[{ required: true },
+                            {
+                                type: 'email',
+                            },]}
+                        >
+                            <Input name="email" onChange={handleChange} />
+                        </Form.Item>
+                        <Form.Item label="Phone" name="Phone"
+                            rules={[{ required: true },
+                            {
+                                type: 'string',
+                                len: 10
+                            }]}
+                        >
+                            <Input name="phone" onChange={handleChange} />
+                        </Form.Item>
+                        <Form.Item label="Password" name="Password"
+                            rules={[{ required: true },
+                            { type: 'string', min: 6 }]}
+                        >
+                            <Input name="password" onChange={handleChange} />
+                        </Form.Item>
+                        <Form.Item style={{ display: "flex" }}>
+                            <Form.Item label="Dob" name="Dob"
+                                rules={[{ required: true }]}
+                            >
+                                <DatePicker style={{ width: "100%" }} name="dob" onChange={(e) => handleChangeDob(e.toISOString())} />
+                            </Form.Item>
+
+                            <Form.Item label="Role" name="Role"
+                                rules={[{ required: true }]}
+                            >
+                                <Select onChange={handleChange}>
+                                    <Select.Option value="1">Admin</Select.Option>
+                                    <Select.Option value="2">User</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        </Form.Item>
+                        <Form.Item label="Gender" name="Gender"
+                            rules={[{ required: true }]}
+                        >
+                            <Radio.Group name="gender" onChange={handleChange}>
+                                <Radio value={true}> Male </Radio>
+                                <Radio value={false}> FeMale </Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        <Form.Item label="Image" valuePropName="fileList" getValueFromEvent={normFile}>
+                            <Upload action="/upload.do" listType="picture-card">
+                                <div>
+                                    <PlusOutlined />
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                        }}
+                                    >
+                                        Select
+                                    </div>
+                                </div>
+                            </Upload>
+                        </Form.Item>
+                        {/* <Form.Item label="Button">
+                            <Button>Button</Button>
+                        </Form.Item> */}
+                    </Form>
+                </Modal>
+            </div>
+        </>
+    );
+}
+
+export default User;

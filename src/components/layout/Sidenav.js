@@ -193,6 +193,19 @@ function Sidenav({ color }) {
             <span className="label">Schedules</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="2">
+          <NavLink to="/users">
+            <span
+              className="icon"
+              style={{
+                background: page === "users" ? color : "",
+              }}
+            >
+              {/* {tables} */}
+            </span>
+            <span className="label">User</span>
+          </NavLink>
+        </Menu.Item>
         <Menu.Item key="3">
           <NavLink to="/billing">
             <span
