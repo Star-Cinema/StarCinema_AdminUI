@@ -25,10 +25,12 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import Users from "./pages/Users";
 import UserDetails from "./pages/UserDetails";
 import './assets/styles/public.css'
+import Category from "./pages/Category";
+import Film from "./pages/Film";
 
 function App() {
   // console.log(sessionStorage.getItem("token"))
-  if(sessionStorage.getItem("token")?.length > 10)
+  //if(sessionStorage.getItem("token")?.length > 10)
   return (
     <div className="App">
       <Switch>
@@ -43,16 +45,17 @@ function App() {
 
           <Route exact path="/users" component={Users} />
           <Route exact path="/users/:id" component={UserDetails} />
-
+          <Route exact path="/category" component={Category} />
+          <Route exact path="/film" component={Film} />
           <Route exact path="/billing" component={Billing} />
           <Route exact path="/profile" component={Profile} />
         </Main>
       </Switch>
     </div>
   )
-  else return(
-    <SignIn/>
-  )
+  // else return(
+  //   <SignIn/>
+  // )
 }
 
 export default App;
