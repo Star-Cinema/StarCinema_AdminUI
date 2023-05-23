@@ -286,6 +286,19 @@ function Sidenav({ color }) {
             <span className="label">Sign Up</span>
           </NavLink>
         </Menu.Item>
+
+        <Menu.Item key="10">
+          <NavLink to="/category">
+           <span className="icon">{dashboard}</span>
+            <span className="label">Category</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="11">
+          <NavLink to="/film">
+           <span className="icon">{dashboard}</span>
+            <span className="label">Film</span>
+          </NavLink>
+        </Menu.Item>
       </Menu>
       
     </>
