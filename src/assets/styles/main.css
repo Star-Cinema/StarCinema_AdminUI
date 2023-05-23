@@ -22,6 +22,15 @@ body {
 .ant-layout.ant-layout-has-sider {
   flex-direction: row;
 }
+.ant-select-selector {
+  height: 40px !important;
+  border-radius: 6px !important;
+  /* padding: 5px !important; */
+}
+.ant-select-selection-item {
+  padding: 5px 0px !important;
+  align-items: center;
+}
 .layout-dashboard {
   background: transparent;
   text-align: left;
@@ -44,7 +53,7 @@ body {
   padding: 33px 20px;
 }
 .layout-dashboard .ant-layout-sider.sider-primary .brand img {
-  height: 30px;
+  height: 70px;
 }
 .layout-dashboard .ant-layout-sider.sider-primary hr {
   margin: 18px 0;
