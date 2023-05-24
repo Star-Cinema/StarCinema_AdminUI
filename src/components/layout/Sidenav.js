@@ -236,6 +236,21 @@ function Sidenav({ color }) {
         </Menu.Item>
 
         <Menu.Item key="2">
+          <NavLink to="/users">
+            <span
+              className="icon"
+              style={{
+                background: page === "users" ? color : "",
+              }}
+            >
+              {profile}
+            </span>
+            <span className="label">User</span>
+          </NavLink>
+        </Menu.Item>
+
+
+        <Menu.Item key="2">
           <NavLink to="/booking">
             <span
               className="icon"
@@ -263,7 +278,9 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
 
-        <Menu.Item key="3">
+        {/* <Menu.Item key="3"> */}
+
+        {/* <Menu.Item key="3">
           <NavLink to="/billing">
             <span
               className="icon"
@@ -275,9 +292,9 @@ function Sidenav({ color }) {
             </span>
             <span className="label">Billing</span>
           </NavLink>
-        </Menu.Item>
+        </Menu.Item> */}
         
-        <Menu.Item key="6">
+        {/* <Menu.Item key="6">
           <NavLink to="/profile">
             <span
               className="icon"
@@ -289,8 +306,8 @@ function Sidenav({ color }) {
             </span>
             <span className="label">Profile</span>
           </NavLink>
-        </Menu.Item>
-        <Menu.Item key="7">
+        </Menu.Item> */}
+        {/* <Menu.Item key="7">
           <NavLink to="/sign-in">
             <span className="icon">{signin}</span>
             <span className="label">Sign In</span>
@@ -300,6 +317,19 @@ function Sidenav({ color }) {
           <NavLink to="/sign-up">
             <span className="icon">{signup}</span>
             <span className="label">Sign Up</span>
+          </NavLink>
+        </Menu.Item> */}
+
+        <Menu.Item key="10">
+          <NavLink to="/category">
+           <span className="icon">{dashboard}</span>
+            <span className="label">Category</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="11">
+          <NavLink to="/film">
+           <span className="icon">{dashboard}</span>
+            <span className="label">Film</span>
           </NavLink>
         </Menu.Item>
       </Menu>

@@ -309,18 +309,33 @@ function Header({
           >
             {toggler}
           </Button>
+
           
-          <Link to="/sign-in" className="btn-sign-in">
-            {profile}
-            <span>Sign in</span>
-          </Link>
-          <Input
-            className="header-search"
-            placeholder="Type here..."
-            prefix={<SearchOutlined />}
-          />
-        </Col>
-      </Row>
+          <Link className="btn-sign-in" onClick={() => {
+            sessionStorage.removeItem("token")
+            window.location.reload()
+          }}>
+            {/* {profile} */}
+
+          {/* <Avatar
+            className="shape-avatar"
+            shape="square"
+            size={40}
+            src="https://www.macmillandictionary.com/external/slideshow/full/emoji_poo_full.jpg"
+          ></Avatar> */}
+          <span>Sign out</span>
+        </Link>
+        <Avatar
+              size={38}
+              src="https://e7.pngegg.com/pngimages/348/800/png-clipart-man-wearing-blue-shirt-illustration-computer-icons-avatar-user-login-avatar-blue-child.png"
+            />
+        {/* <Input
+          className="header-search"
+          placeholder="Type here..."
+          prefix={<SearchOutlined />}
+        /> */}
+      </Col>
+    </Row >
     </>
   );
 }
