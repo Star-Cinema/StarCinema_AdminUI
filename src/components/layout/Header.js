@@ -326,8 +326,8 @@ function Header({
           <span>Sign out</span>
         </Link>
         <Avatar
-              size={32}
-              src="https://www.macmillandictionary.com/external/slideshow/full/emoji_poo_full.jpg"
+              size={38}
+              src="https://e7.pngegg.com/pngimages/348/800/png-clipart-man-wearing-blue-shirt-illustration-computer-icons-avatar-user-login-avatar-blue-child.png"
             />
         {/* <Input
           className="header-search"

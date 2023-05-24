@@ -60,7 +60,7 @@ const columns = [
         dataIndex: "status",
     },
     {
-        title: "CREATED",
+        title: "DOB",
         key: "created",
         dataIndex: "created",
     },
@@ -71,6 +71,7 @@ const columns = [
     },
 ];
 
+//Show list user in database HungTD34
 function User() {
     const history = useHistory()
     const [page, setPage] = useState(1)
@@ -87,10 +88,13 @@ function User() {
         fecthData(page, 10, key)
     }, [page])
 
+    //Get data when page load HungTD34
     const fecthData = async (page = 1, pageSize = 10, key = "", sortBy = "id") => {
         setLoading(true)
         var res = await axios.get("https://localhost:7113/api/users?page=" + page + "&pageSize=" + pageSize + "&key=" + key + "&sortBy=" + sortBy)
         const data = []
+
+        //Convert records to rows for display HungTD34
         res.data.data.map((item, index) => (
             data.push({
                 key: index,
@@ -162,6 +166,7 @@ function User() {
         setLoading(false)
     }
 
+    //Request API to disable user HungTD34
     const handleDeleteUser = async (id) => {
         var res = await axios.delete("https://localhost:7113/api/users/" + id)
         console.log(res.data)
@@ -169,9 +174,13 @@ function User() {
     }
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    //Show form create new user HungTD34
     const showModal = () => {
         setIsModalOpen(true);
     };
+
+    //Request API to create new user when form submit HungTD34
     const handleOk = async () => {
         var data = form.getFieldValue()
 
@@ -184,24 +193,31 @@ function User() {
 
         window.location.reload()
     };
+
+    //Close form create HungTD34
     const handleCancel = () => {
         setIsModalOpen(false);
     };
 
-    const handleChange = (e) => {
-        if (e.target)
-            setFormData({ ...formData, [e.target.name]: e.target.value });
-        else setFormData({ ...formData, ["roleId"]: e })
-    };
+    // const handleChange = (e) => {
+    //     if (e.target)
+    //         setFormData({ ...formData, [e.target.name]: e.target.value });
+    //     else setFormData({ ...formData, ["roleId"]: e })
+    // };
 
+
+    //Set state of dob HungTD34
     const handleChangeDob = (e) => {
         setFormData({ ...formData, ['dob']: e });
     }
 
+    //Request API to search user by name HungTD34
     const handleSearch = () => {
         fecthData(page, 10, key)
     }
 
+
+    //Upload avatar user to cloudinary HungTD34
     const handleUpload = async (file) => {
         var res = await UploadImageAPI(file.file)
         setUrl(res)
@@ -249,7 +265,7 @@ function User() {
                                 />
                             </div>
                         </Card>
-                        <Pagination defaultCurrent={1} total={15} onChange={(page) => setPage(page)} style={{ textAlign: "center" }} />
+                        <Pagination defaultCurrent={1} total={9} onChange={(page) => setPage(page)} style={{ textAlign: "center" }} />
                     </Col>
                 </Row>
 

@@ -225,7 +225,7 @@ function Sidenav({ color }) {
                 background: page === "users" ? color : "",
               }}
             >
-              {/* {tables} */}
+              {profile}
             </span>
             <span className="label">User</span>
           </NavLink>
@@ -247,7 +247,7 @@ function Sidenav({ color }) {
         </Menu.Item>
 
 
-        <Menu.Item key="3">
+        {/* <Menu.Item key="3">
           <NavLink to="/billing">
             <span
               className="icon"
@@ -259,9 +259,9 @@ function Sidenav({ color }) {
             </span>
             <span className="label">Billing</span>
           </NavLink>
-        </Menu.Item>
+        </Menu.Item> */}
         
-        <Menu.Item key="6">
+        {/* <Menu.Item key="6">
           <NavLink to="/profile">
             <span
               className="icon"
@@ -273,8 +273,8 @@ function Sidenav({ color }) {
             </span>
             <span className="label">Profile</span>
           </NavLink>
-        </Menu.Item>
-        <Menu.Item key="7">
+        </Menu.Item> */}
+        {/* <Menu.Item key="7">
           <NavLink to="/sign-in">
             <span className="icon">{signin}</span>
             <span className="label">Sign In</span>
@@ -285,7 +285,7 @@ function Sidenav({ color }) {
             <span className="icon">{signup}</span>
             <span className="label">Sign Up</span>
           </NavLink>
-        </Menu.Item>
+        </Menu.Item> */}
 
         <Menu.Item key="10">
           <NavLink to="/category">
