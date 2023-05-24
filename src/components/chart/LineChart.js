@@ -1,36 +1,122 @@
-/*!
-  =========================================================
-  * Muse Ant Design Dashboard - v1.0.0
-  =========================================================
-  * Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-  * Copyright 2021 Creative Tim (https://www.creative-tim.com)
-  * Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-  * Coded by Creative Tim
-  =========================================================
-  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: LineChart.js
+//FileType: Javascript Source file
+//Author : TuNT37
+//Created On : 23/05/2023
+//Last Modified On : 24/05/2023
+//Copy Rights : FA Academy
+//Description : 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 import ReactApexChart from "react-apexcharts";
 import { Typography } from "antd";
 import { MinusOutlined } from "@ant-design/icons";
-import lineChart from "./configs/lineChart";
 
-function LineChart() {
+function LineChart({dataRevenue}) {
   const { Title, Paragraph } = Typography;
+
+  //TuNT37 Get 3first character of month in 12month since current month 
+  let listMonth = []
+  for (let i = 0; i < 12; i++) {
+    const date = new Date();
+    date.setMonth(date.getMonth() - i);
+    const month = date.toLocaleString('default', { month: 'long' }).slice(0, 3);
+    listMonth.push(month)
+  }  
+
+  //TuNT37 Line Chart
+  const lineChart = {
+    series: [
+      {
+        name: "Revenue Services",
+        data: dataRevenue.listRevenueServices && dataRevenue.listRevenueServices.reverse(),
+        offsetY: 0,
+      },
+      {
+        name: "Revenue Tickets",
+        data: dataRevenue.listRevenueTickets && dataRevenue.listRevenueTickets.reverse(),
+        offsetY: 0,
+      },
+    ],
+  
+    options: {
+      chart: {
+        width: "100%",
+        height: dataRevenue.listRevenueTickets && Math.max(...dataRevenue.listRevenueTickets) + (dataRevenue.listRevenueTickets * 10 / 100) ,
+        type: "area",
+        toolbar: {
+          show: false,
+        },
+      },
+  
+      legend: {
+        show: false,
+      },
+  
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: "smooth",
+      },
+  
+      yaxis: {
+        labels: {
+          style: {
+            fontSize: "14px",
+            fontWeight: 600,
+            colors: ["#8c8c8c"],
+          },
+        },
+      },
+  
+      xaxis: {
+        labels: {
+          style: {
+            fontSize: "14px",
+            fontWeight: 600,
+            colors: [
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+              "#8c8c8c",
+            ],
+          },
+        },
+        categories: listMonth.reverse(),
+      },
+  
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val;
+          },
+        },
+      },
+    },
+  };
 
   return (
     <>
       <div className="linechart">
         <div>
-          <Title level={5}>Active Users</Title>
+          <Title level={5}>Chart Revenue</Title>
           <Paragraph className="lastweek">
-            than last week <span className="bnb2">+30%</span>
+            Revenue 12 month <span className="bnb2"> ...  </span>
           </Paragraph>
         </div>
         <div className="sales">
           <ul>
-            <li>{<MinusOutlined />} Traffic</li>
-            <li>{<MinusOutlined />} Sales</li>
+            <li>{<MinusOutlined />} Revenue Services </li>
+            <li>{<MinusOutlined />} Revenue Tickets </li>
           </ul>
         </div>
       </div>

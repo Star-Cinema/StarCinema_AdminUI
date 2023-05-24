@@ -1,14 +1,13 @@
-// /*!
-// =========================================================
-// * Muse Ant Design Dashboard - v1.0.0
-// =========================================================
-// * Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-// * Copyright 2021 Creative Tim (https://www.creative-tim.com)
-// * Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-// * Coded by Creative Tim
-// =========================================================
-// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// */
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: Booking.js
+//FileType: Javascript Source file
+//Author : TuNT37
+//Created On : 19/05/2023
+//Last Modified On : 24/05/2023
+//Copy Rights : FA Academy
+//Description : 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 import {
     Row,
     Col,
@@ -49,22 +48,27 @@ const columns = [
     {
         key: "userName",
         dataIndex: "userName",
-        title: "Tên khách hàng",
+        title: "UserName",
     },
     {
         key: "film",
         dataIndex: "film",
-        title: "Phim",
+        title: "Film",
+    },
+    {
+        key: "status",
+        dataIndex: "status",
+        title: "Stutus",
     },
     {
         key: "totalPrice",
         dataIndex: "totalPrice",
-        title: "Tổng tiền",
+        title: "TotalPrice",
     },
     {
         key: "createAt",
         dataIndex: "createAt",
-        title: "Thời gian booking",
+        title: "DateCreate",
     },
     {
         key: "actions",
@@ -73,25 +77,27 @@ const columns = [
     },
 ];
 
+// TuNT37 : function booking
 export default function Booking() {
 
     const [form] = Form.useForm();
 
-    const [bookings, setBookings] = useState([]);
-    const [booking, setBooking] = useState({});
-    const [films, setFilms] = useState([]);
-    const [schedules, setSchedules] = useState([]);
-    const [services, setServices] = useState([]);
-    const [seats, setSeats] = useState([]);
+    const [bookings, setBookings] = useState([]);   // TuNT37 bookings 
+    const [booking, setBooking] = useState({});     // TuNT37 booking
+    const [films, setFilms] = useState([]);         // TuNT37 flims
+    const [schedules, setSchedules] = useState([]); // TuNT37 schedules
+    const [services, setServices] = useState([]);   // TuNT37 services
+    const [seats, setSeats] = useState([]);         // TuNT37 seats
 
-    const [loading, setLoading] = useState(false);
-    const [totalItem, setTotalItem] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
-    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);  
+    const [totalItem, setTotalItem] = useState(0);  // TuNT37 totalItem
+    const [pageSize, setPageSize] = useState(10);   // TuNT37 pageSize
+    const [page, setPage] = useState(1);            // TuNT37 page
 
-    const [isShowInfo, setIsShowInfo] = useState(false);
-    const [isShowCreate, setIsShowCreate] = useState(false);
+    const [isShowInfo, setIsShowInfo] = useState(false);      // TuNT37 set show info booking detail
+    const [isShowCreate, setIsShowCreate] = useState(false);  // TuNT37 set show form create 
 
+    // TuNT37 form data
     const [formData, setFormData] = useState({
         filmId: '',
         scheduleId: '',
@@ -99,15 +105,17 @@ export default function Booking() {
         listSeatId: [],
     });
 
+    // TuNT37 set page 
     useEffect(() => {
         setPage(1);
     }, [pageSize])
 
+    // TuNT37 Call api and reRender record when change page/pageSize
     useEffect(() => {
         getRecords(page, pageSize);
     }, [page, pageSize])
 
-    // Convert to format date
+    // TuNT37 Convert to format date
     function convertDateTime(dateTimeStr) {
         const dateTime = new Date(dateTimeStr);
         const date = dateTime.toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' });
@@ -115,7 +123,7 @@ export default function Booking() {
         return `${date} ${time}`;
     }
 
-    // handle delete and cofirm booking 
+    // TuNT37 handle delete and cofirm booking 
     const onDelete = (id) => {
         Modal.confirm({
             title: 'Are you sure you want to delete?',
@@ -129,7 +137,7 @@ export default function Booking() {
         });
     }
 
-    // Get all record booking 
+    // TuNT37 Get all record booking 
     const getRecords = (page, pageSize) => {
         setLoading(true);
         axios.get(`https://localhost:7113/api/Bookings/GetAllByPage?page=${page - 1}&limit=${pageSize}`)
@@ -147,6 +155,9 @@ export default function Booking() {
                             ),
                             film: (
                                 <>{item.filmName}</>
+                            ),
+                            status: (
+                                <>{item.status}</>
                             ),
                             totalPrice: (
                                 <>{item.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</>
@@ -170,7 +181,7 @@ export default function Booking() {
             })
     }
 
-    // Get Schedule by FilmId
+    // TuNT37 Get Schedule by FilmId
     useEffect(() => {
         if(!formData.filmId) 
         axios.get(`https://localhost:7113/api/Schedules?filmId=${formData.filmId}`)
@@ -179,7 +190,7 @@ export default function Booking() {
             });
     }, [formData.filmId])
 
-    // Get Seat Not booked by filmId and scheduleId
+    // TuNT37 Get Seat Not booked by filmId and scheduleId
     useEffect(() => {
         axios.get(`https://localhost:7113/api/Bookings/GetSeatsNotBooked?filmId=${formData.filmId}&scheduleId=${formData.scheduleId}`)
             .then((response) => {
@@ -187,7 +198,7 @@ export default function Booking() {
             });
     }, [formData.scheduleId])
 
-    // handle show modal detail booking
+    // TuNT37 handle show modal detail booking
     const handleShowInfo = async (id) => {
         await axios.get(`https://localhost:7113/api/Bookings/${id}`)
             .then((response) => {
@@ -196,7 +207,7 @@ export default function Booking() {
         setIsShowInfo(true);
     }
 
-    // handle show modal form create booking
+    // TuNT37 handle show modal form create booking
     const handleShowFormCreate = async () => {
         await axios.get("https://localhost:7113/api/Bookings/GetAllFilms",)
             .then((response) => {
@@ -209,6 +220,7 @@ export default function Booking() {
         await setIsShowCreate(true);
     }
 
+    // TuNT37 handle on change 
     const handleOnChange = async (value, name) => {
         console.log(name + ' ' + value);
         setFormData({ 
@@ -217,7 +229,7 @@ export default function Booking() {
         });
     }
 
-    // handle Ok when submit create
+    // TuNT37 handle Ok when submit create
     const handleOk = async () => {
         const values = form.getFieldsValue();
         let _formData = {
@@ -226,7 +238,7 @@ export default function Booking() {
             listServiceId: values.listServiceId,
             listSeatId: values.listSeatId,
         }
-        await axios.post(`https://localhost:7113/api/Bookings`, _formData)
+        await axios.post(`https://localhost:7113/api/Bookings`, _formData)  // TuNT37 call api create booking 
         .then((response) => {
             console.log('response: ', response);
         });
@@ -242,12 +254,16 @@ export default function Booking() {
                         <Card bordered={false} className="criclebox tablespace mb-24" >
                             <div style={HeaderTableStyles}>
                                 <span style={{ fontSize: 20, fontWeight: 600 }}>List Bookings</span>
+
+                                {/* TuNT37 button add */}
                                 <Button onClick={async () => await handleShowFormCreate()} style={{ background: "#237804", color: "#ffffff" }}>
                                     <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
                                     Add
                                 </Button>
                             </div>
                             <div className="table-responsive">
+
+                                {/* TuNT37 table data booking */}
                                 <Table
                                     columns={columns}
                                     dataSource={bookings}
@@ -267,6 +283,7 @@ export default function Booking() {
                                     className="ant-border-space"
                                 />
 
+                                {/* TuNT37  Modal create booking */}
                                 <Modal title='Create Booking' visible={isShowCreate} 
                                     onOk={() => {form.validateFields().then(handleOk)} } 
                                     onCancel={() => {
@@ -274,6 +291,8 @@ export default function Booking() {
                                         form.resetFields();
                                 }}>
                                     <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} layout="horizontal" style={{ alignContent: "center" }} >
+                                        
+                                        {/* TuNT37 Select Flim */}
                                         <Form.Item name="filmId" label="Film"
                                             rules={[
                                                 { required: true, message: "Select the film" },
@@ -300,6 +319,7 @@ export default function Booking() {
                                             </Select>
                                         </Form.Item>
 
+                                        {/* TuNT37 if selected filmId then show schedule by filmId  */}
                                         { formData.filmId && <Form.Item name="scheduleId" label="Schedule"
                                             rules={[
                                                 { required: true, message: "Select the schedule" },
@@ -326,6 +346,7 @@ export default function Booking() {
                                             </Select>
                                         </Form.Item> }
 
+                                        {/* TuNT37 Select Seat */}
                                         <Form.Item name="listSeatId" label="Seat"
                                             rules={[
                                                 { required: true, message: "Select the Seat" },
@@ -356,6 +377,7 @@ export default function Booking() {
                                             </Select>
                                         </Form.Item>
 
+                                        {/* TuNT37 Select Service */}
                                         <Form.Item name="listServiceId" label="Service"
                                             rules={[
                                                 {
@@ -387,6 +409,7 @@ export default function Booking() {
                                     </Form>
                                 </Modal>
 
+                                {/* TuNT37 Modal show detail booking */}
                                 <Modal
                                     title='Details Booking'
                                     visible={isShowInfo}
@@ -400,20 +423,23 @@ export default function Booking() {
                                         layout="horizontal"
                                         style={{ alignContent: "center" }}
                                     >
-                                        <Form.Item name="id" label="Mã booking" >
+                                        <Form.Item name="id" label="Id" >
                                             <Text type="success"> {booking.id} </Text>
                                         </Form.Item>
-                                        <Form.Item name="userName" label="Họ và tên" >
+                                        <Form.Item name="userName" label="userName" >
                                             <Text type="success"> {booking.userName} </Text>
                                         </Form.Item>
-                                        <Form.Item name="filmName" label="tên phim" >
+                                        <Form.Item name="filmName" label="FilmName" >
                                             <Text type="success"> {booking.filmName} </Text>
                                         </Form.Item>
-                                        <Form.Item name="createAt" label="Ngày booking" >
+                                        <Form.Item name="status" label="Status" >
+                                            <Text type="success"> {booking.status} </Text>
+                                        </Form.Item>
+                                        <Form.Item name="createAt" label="DateCreate" >
                                             <Text type="success"> {convertDateTime(booking.createAt)} </Text>
                                         </Form.Item>
                                         <hr></hr>
-                                        <Form.Item name="totalPrice" label="Tổng tiền" >
+                                        <Form.Item name="totalPrice" label="TotalPrice" >
                                             <Text type="success"> {booking.totalPrice} </Text>
                                         </Form.Item>
                                     </Form>

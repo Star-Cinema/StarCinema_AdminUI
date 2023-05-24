@@ -302,13 +302,13 @@ function Header({
             </Dropdown>
           </Badge>
 
-          {/* <Button
+          <Button
             type="link"
             className="sidebar-toggler"
             onClick={() => onPress()}
           >
             {toggler}
-          </Button> */}
+          </Button>
 
           
           <Link className="btn-sign-in" onClick={() => {
