@@ -3,6 +3,8 @@ import { EditOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Tooltip, Modal, Form, Input, notification } from "antd";
 
+//START REGION
+//VYVNK1 FUNC UPDATE CATEGORY
 const CategoryUpdate = ({ id, name, loadData }) => {
   // antd
   const [form] = Form.useForm();
@@ -39,6 +41,7 @@ const CategoryUpdate = ({ id, name, loadData }) => {
     });
   };
 
+  // VYVNK1 FUNCTION CREATE CATEGORY
   const handleCreate =  async () => {
 
      await axios

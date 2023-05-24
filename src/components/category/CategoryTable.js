@@ -7,6 +7,9 @@ import CategoryCreate from "./CategoryCreate";
 import CategoryDelete from "./CategoryDelete";
 import CategoryUpdate from "./CategoryUpdate";
 
+// START REGION
+// VYVNK1 DISPLAY CATEGORY LIST
+
 const CategoryTable = () => {
   const [categoryAPI, setCategoryAPI] = useState([]);
   const data = [];
@@ -81,5 +84,5 @@ const CategoryTable = () => {
     </>
   );
 };
-
+// END REGION
 export default CategoryTable;

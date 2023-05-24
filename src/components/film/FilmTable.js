@@ -6,10 +6,9 @@ import { Space, Table, Image } from "antd";
 import FilmDelete from "./FilmDelete";
 import FilmCreate from "./FilmCreate";
 import FilmUpdate from "./FilmUpdate";
-// import CategoryCreate from "./CategoryCreate";
-// import CategoryDelete from "./CategoryDelete";
-// import CategoryUpdate from "./CategoryUpdate";
 
+//START REGION
+//VYVNK1 FUNCTION TO DISPLAY LIST OF FILM
 const FilmTable = () => {
   const [filmAPI, setFilmAPI] = useState([]);
   const data = [];
@@ -78,7 +77,7 @@ const FilmTable = () => {
       title: "",
       dataIndex: "image",
       key: "image",
-      render: (_, record) => <Image width={70} src={record.image} />,
+      render: (_, record) => <Image style={{borderRadius:"10px"}} width={70} height={80} src={record.image} />,
     },
     {
       title: "Id",
@@ -188,5 +187,5 @@ const FilmTable = () => {
     </>
   );
 };
-
+// END REGION
 export default FilmTable;
