@@ -36,7 +36,7 @@ const FilmUpdate = ({
   listCategory,
   loadData,
 }) => {
-  // antd
+  // START REGION--VYVNK1 State from antd
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -55,9 +55,9 @@ const FilmUpdate = ({
   const handleCancelErr = () => {
     setdisplayErr(false);
   };
-  // end antd
+  // END REGION -- end antd
 
-  // for upload image
+  // START REGION-- VYVNK1 for upload image
   const [imgLink, setImgLink] = useState("");
 
   const fetchImgLink = (value) => {
@@ -72,7 +72,9 @@ const FilmUpdate = ({
         },
       ],
     });
+    console.log(value);
   };
+// END REGION--
 
   const dataTable = {
     id: id,
@@ -96,7 +98,7 @@ const FilmUpdate = ({
   const [beError, setBeError] = useState("");
   const [displayErr, setdisplayErr] = useState(false);
 
-  // GET DATE FROM DATEPICKER
+  // START REGION-- VYVNK1 GET DATE FROM DATEPICKER
   const onSelectDate = (date, dateString) => {
     console.log(date, dateString);
     setFormData({
@@ -105,9 +107,11 @@ const FilmUpdate = ({
     });
     console.log(formData);
   };
+ // END REGION-- 
 
+ // START REGION-- VYVNK1 FUNC UPDATE IMAGE
   const handleCreate = async () => {
-    console.log(formData);
+    console.log(formData.image[0].path);
     await axios
       .put(`https://localhost:7113/api/Films/${formData.id}`, formData)
       .then(function (response) {
@@ -126,8 +130,7 @@ const FilmUpdate = ({
         setdisplayErr(true);
       });
   };
-
-  console.log(release);
+  // END REGION-- 
 
   useEffect(() => {
     form.setFieldsValue({
@@ -195,7 +198,6 @@ const FilmUpdate = ({
           <Row>
             <Col lg={12} xs={24}>
               <Form.Item
-                // onChange={(e) => handleChange(e)}
                 name="id"
                 label="Category Id"
               >
@@ -206,7 +208,6 @@ const FilmUpdate = ({
                   setFormData({ ...formData, name: event.target.value });
                   console.log(formData);
                 }}
-                // onChange={(e) => handleChange(e)}
                 name="name"
                 label="Film Name"
                 rules={[

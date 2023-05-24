@@ -3,9 +3,10 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Tooltip, Modal, Button, Form, Input, notification } from "antd";
 
-
-const CategoryCreate = ({loadData}) => {
-  // antd
+//START REGION
+//VYVNK1 FORM CREATE CATEGORY
+const CategoryCreate = ({ loadData }) => {
+  // ANTD STATE
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,8 +26,7 @@ const CategoryCreate = ({loadData}) => {
     setdisplayErr(false);
   };
 
-  
-  // end antd
+  // END ANTD
 
   const [formData, setFormData] = useState({
     name: "",
@@ -41,8 +41,10 @@ const CategoryCreate = ({loadData}) => {
     });
   };
 
-  const handleCreate =  () => {  
-     axios
+  //START REGION
+  //VYVNK1 FUNCTION CREATE CATEGORY
+  const handleCreate = () => {
+    axios
       .post(`https://localhost:7113/api/Categories`, formData)
       .then(function (response) {
         setIsModalOpen(false);
@@ -52,7 +54,6 @@ const CategoryCreate = ({loadData}) => {
           description: "Add Category successfully!",
           duration: 3,
           placement: "topRight",
-          
         });
       })
       .catch(function (error) {
@@ -61,7 +62,10 @@ const CategoryCreate = ({loadData}) => {
         setdisplayErr(true);
       });
   };
+  // END REGION
 
+  //START REGION
+  //VYVNK1 UI OF CREATE CATEGORY
   return (
     <>
       <Tooltip title="Create Category">
@@ -122,16 +126,14 @@ const CategoryCreate = ({loadData}) => {
         visible={displayErr}
         onOk={handleOkErr}
         onCancel={handleCancelErr}
-        cancelButtonProps={{ style: { display: 'none' } }}
+        cancelButtonProps={{ style: { display: "none" } }}
         // footer={null}
       >
         <p style={{ color: "red" }}>{beError}</p>
-        
       </Modal>
-
-      
     </>
   );
+  // END REGION
 };
 
 export default CategoryCreate;

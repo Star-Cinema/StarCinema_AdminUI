@@ -3,7 +3,12 @@ import {DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Tooltip, Modal, notification } from "antd";
 
+
+// DELETE FILM
 const FilmDelete = ({ id, name, loadData }) => {
+
+//START REGION
+//VYVNK1 FUNCTION DELETE FILM
   const onDelete = (id, name) => {
     Modal.confirm({
       title: `Do you want to delete Film ${name}?`,
@@ -29,6 +34,11 @@ const FilmDelete = ({ id, name, loadData }) => {
       },
     });
   };
+  // END REGION
+
+  //START REGION
+  //VYVNK1 UI OF DELETE FILM
+  
   return (
     <Tooltip title="Delete">
       <a onClick={() => onDelete(id, name)}>
