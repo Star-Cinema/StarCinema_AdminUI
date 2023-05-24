@@ -31,6 +31,7 @@ import TextArea from "antd/lib/input/TextArea";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // import Search from "antd/lib/transfer/search";
 import Search from "antd/lib/input/Search";
+import { UploadImageAPI } from "../assets/js/public";
 
 const { Title } = Typography;
 const normFile = (e) => {
@@ -80,9 +81,10 @@ function User() {
     const [formData, setFormData] = useState({
         avatar: ""
     })
+    const [url, setUrl] = useState()
 
     useEffect(() => {
-        fecthData(page,10,key)
+        fecthData(page, 10, key)
     }, [page])
 
     const fecthData = async (page = 1, pageSize = 10, key = "", sortBy = "id") => {
@@ -171,8 +173,12 @@ function User() {
         setIsModalOpen(true);
     };
     const handleOk = async () => {
-        console.log(formData)
-        var res = await axios.post("https://localhost:7113/api/users/create", formData)
+        var data = form.getFieldValue()
+
+        data.avatar = url
+        data.dob = data.dob.toISOString()
+
+        var res = await axios.post("https://localhost:7113/api/users/create", data)
         console.log(res)
         setIsModalOpen(false);
 
@@ -196,6 +202,13 @@ function User() {
         fecthData(page, 10, key)
     }
 
+    const handleUpload = async (file) => {
+        var res = await UploadImageAPI(file.file)
+        setUrl(res)
+
+        return true
+    }
+
     return (
         <>
             <div className="tabled">
@@ -208,9 +221,9 @@ function User() {
                             extra={
                                 <>
                                     <Space direction="horizontal">
-                                    <div className="search-container">
+                                        <div className="search-container">
                                             <div className="search-input-container">
-                                                <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKey(e.target.value)}/>
+                                                <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKey(e.target.value)} />
                                             </div>
                                             <div className="search-button-container">
                                                 <button className="search-button" onClick={handleSearch}>
@@ -261,7 +274,7 @@ function User() {
                     //     maxWidth: 600,
                     // }}
                     >
-                        <Form.Item name="Name" label="Name"
+                        <Form.Item name="name" label="Name"
                             rules={[
                                 {
                                     required: true,
@@ -272,57 +285,60 @@ function User() {
                                 },
                             ]}
                         >
-                            <Input name="name" onChange={handleChange} />
+                            <Input />
                         </Form.Item>
-                        <Form.Item name="Email" label="Email"
+                        <Form.Item name="email" label="Email"
                             rules={[{ required: true },
                             {
                                 type: 'email',
                             },]}
                         >
-                            <Input name="email" onChange={handleChange} />
+                            <Input />
                         </Form.Item>
-                        <Form.Item label="Phone" name="Phone"
+                        <Form.Item label="Phone" name="phone"
                             rules={[{ required: true },
                             {
                                 type: 'string',
                                 len: 10
                             }]}
                         >
-                            <Input name="phone" onChange={handleChange} />
+                            <Input />
                         </Form.Item>
-                        <Form.Item label="Password" name="Password"
+                        <Form.Item label="Password" name="password"
                             rules={[{ required: true },
                             { type: 'string', min: 6 }]}
                         >
-                            <Input name="password" onChange={handleChange} />
+                            <Input />
                         </Form.Item>
                         <Form.Item style={{ display: "flex" }}>
-                            <Form.Item label="Dob" name="Dob"
+                            <Form.Item label="Dob" name="dob"
                                 rules={[{ required: true }]}
                             >
-                                <DatePicker style={{ width: "100%" }} name="dob" onChange={(e) => handleChangeDob(e.toISOString())} />
+                                <DatePicker style={{ width: "100%" }} onChange={(e) => handleChangeDob(e.toISOString())} />
                             </Form.Item>
 
-                            <Form.Item label="Role" name="Role"
+                            <Form.Item label="Role" name="role"
                                 rules={[{ required: true }]}
                             >
-                                <Select onChange={handleChange}>
+                                <Select>
                                     <Select.Option value="1">Admin</Select.Option>
                                     <Select.Option value="2">User</Select.Option>
                                 </Select>
                             </Form.Item>
                         </Form.Item>
-                        <Form.Item label="Gender" name="Gender"
+                        <Form.Item label="Gender" name="gender"
                             rules={[{ required: true }]}
                         >
-                            <Radio.Group name="gender" onChange={handleChange}>
+                            <Radio.Group>
                                 <Radio value={true}> Male </Radio>
                                 <Radio value={false}> FeMale </Radio>
                             </Radio.Group>
                         </Form.Item>
-                        <Form.Item label="Image" valuePropName="fileList" getValueFromEvent={normFile}>
-                            <Upload action="/upload.do" listType="picture-card">
+                        <Form.Item label="Avatar" name="avatar" valuePropName="fileList" getValueFromEvent={normFile}>
+                            <Upload listType="picture-card"
+                                customRequest={handleUpload}
+                            // beforeUpload={() => false}
+                            >
                                 <div>
                                     <PlusOutlined />
                                     <div
