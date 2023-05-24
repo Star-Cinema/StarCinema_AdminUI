@@ -21,11 +21,16 @@ import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+// import ChatPage from "./pages/ChatPage";
+// import ChatProvider from "./context/ChatContext";
 
 function App() {
   return (
     <div className="App">
       <Switch>
+        {/* <ChatProvider>
+            <Route exact path="/chat" component={ChatPage} />
+        </ChatProvider> */}
         <Route path="/sign-up" exact component={SignUp} />
         <Route path="/sign-in" exact component={SignIn} />
         <Main>

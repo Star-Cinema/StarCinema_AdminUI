@@ -1,26 +1,15 @@
-// /*!
-// =========================================================
-// * Muse Ant Design Dashboard - v1.0.0
-// =========================================================
-// * Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-// * Copyright 2021 Creative Tim (https://www.creative-tim.com)
-// * Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-// * Coded by Creative Tim
-// =========================================================
-// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// */
+/*
+    Account : AnhNT282
+    Description : UI schedule manager
+    Date created : 2023/05/11
+*/
+
 import {
     Row,
     Col,
     Card,
-    Radio,
     Table,
-    Upload,
-    message,
-    Progress,
     Button,
-    Avatar,
-    Typography,
     Modal,
     Input,
     Form,
@@ -30,33 +19,12 @@ import {
 } from "antd";
 
 import '../assets/styles/schedulePage.css';
-
-
-
-import { DeleteFilled, DeleteOutlined, DeleteTwoTone, EditFilled, EditTwoTone, SearchOutlined, ToTopOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-
+import {  DeleteOutlined,  EditTwoTone,  } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
 
-const { Search } = Input;
-
-
-// import * as Yup from "yup";
-
-// const schema = Yup.object().shape({
-//     filmId: Yup.string().required("Film is required"),
-//     roomId: Yup.string().required("Room is required"),
-//     startTime: Yup.date().required("Start time is required"),
-//     price: Yup.number().required("Price is required").min(0, "Price must be greater than or equal to 0"),
-// });
-
-const { Title } = Typography;
 const Option = Select.Option;
-
-
-
 
 //styles
 const HeaderTableStyles = {
@@ -69,28 +37,6 @@ const HeaderTableStyles = {
 
 }
 
-const styleSearchTextbox = {
-    padding: "8px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    flex: 1
-}
-
-const styleSearchDiv = {
-    position: "relative",
-    marginLeft: 8,
-    width: 24,
-    height: 24
-}
-
-const styleSearchIcon = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    color: "#007bff",
-    cursor: "pointer"
-}
 
 // table code start
 const columns = [
@@ -98,7 +44,6 @@ const columns = [
         key: "ID",
         title: "ID",
         dataIndex: "ID",
-        // width: "10%",
     },
     {
         key: "filmName",
@@ -131,7 +76,7 @@ const columns = [
         title: "Actions",
     },
 ];
-
+// Convert datetime Local to format YYYY-MM-DD HH:MM AnhNT282
 function convertDateTime(dateTimeStr) {
     const dateTime = new Date(dateTimeStr);
     const date = dateTime.toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric', year: 'numeric' });
@@ -142,7 +87,6 @@ function convertDateTime(dateTimeStr) {
 
 function SchedulesTable() {
     const [form] = Form.useForm();
-    const { getFieldDecorator } = form;
     const [dataSource, setDataSource] = useState([]);
     const [loading, setLoading] = useState(false);
     const [totalItem, setTotalItem] = useState(0);
@@ -160,7 +104,6 @@ function SchedulesTable() {
         price: 0,
         startTime: new Date(),
     });
-    const onChange = (e) => console.log(`radio checked:${e.target.value}`);
     const [selectedFilm, setSelectedFilm] = useState('');
     const [selectedRoom, setSelectedRoom] = useState('');
     const [selectedDate, setSelectedDate] = useState();
@@ -173,13 +116,13 @@ function SchedulesTable() {
     const handleRoomChange = (value) => {
         setSelectedRoom(value);
     };
-
+    // Convert local time to format YYYY-MM-DD AnhNT282
     const handleSelectDateTime = (date, dateString) => {
         const parts = dateString.split('/');
         const convertedDate = parts.reverse().join('-');
         setSelectedDate(convertedDate);
     }
-
+    // Reset data in form data AnhNT282
     const resetFormData = () => {
         setFormData({
             id: 0,
@@ -209,13 +152,7 @@ function SchedulesTable() {
         getRecords();
     }, [page])
 
-    // const handleChange = (event) => {
-    //     const target = event.target;
-    //     const value = target.type === 'checkbox' ? target.checked : target.value;
-    //     const name = target.name;
-    //     setFormData({ ...formData, [name]: value });
-    // };
-
+    // Convert datetime local to format ISO
     function convertToISO8601(dateTimeString) {
         const [dateString, timeString] = dateTimeString.split(' ');
         const [day, month, year] = dateString.split('/');
@@ -225,6 +162,8 @@ function SchedulesTable() {
 
         return isoString;
     }
+
+    // set values field start time when datepicker changes value AnhNT282
     const handleDatePickerChange = (date, dateTimeString) => {
 
         try {
@@ -234,7 +173,7 @@ function SchedulesTable() {
             console.log(error);
         }
     }
-
+    // handle delete scheduled AnhNT282
     const onDelete = (id) => {
         Modal.confirm({
             title: 'Are you sure you want to delete?',
@@ -339,7 +278,6 @@ function SchedulesTable() {
                             bordered={false}
                             className="criclebox tablespace mb-24"
                         >
-
                             <div style={HeaderTableStyles}>
                                 <span style={{ fontSize: 20, fontWeight: 600 }}>List schedules</span>
                                 <Space>
@@ -548,24 +486,14 @@ function SchedulesTable() {
                                                 {
                                                     required: true,
                                                     message: "Price is required",
-                                                },
-                                                {
-                                                    type: "number",
-                                                    min: 0,
-                                                    max: 100000000,
-                                                    message: "Price must be greater than or equal to 0",
-                                                },
+                                                }
                                             ]}
                                         >
                                             <Input
                                                 name="price"
                                                 type="number"
                                                 onChange={(event) => {
-                                                    const priceValue = parseFloat(event.target.value);
-                                                    console.log(priceValue, typeof priceValue);
-                                                    if (!isNaN(priceValue)) {
-                                                        setFormData({ ...formData, price: priceValue });
-                                                    }
+                                                        setFormData({ ...formData, price: event.target.value });
                                                 }}
                                             />
                                         </Form.Item>
