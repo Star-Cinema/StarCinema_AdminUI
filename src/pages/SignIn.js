@@ -22,7 +22,7 @@ import {
   Input,
   Switch,
 } from "antd";
-import signinbg from "../assets/images/img-signin.jpg";
+import signinbg from "../assets/images/banner.png";
 import {
   DribbbleOutlined,
   TwitterOutlined,
@@ -30,6 +30,7 @@ import {
   GithubOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
+import jwtDecode from "jwt-decode";
 function onChange(checked) {
   console.log(`switch to ${checked}`);
 }
@@ -127,15 +128,24 @@ function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+
+  //Request API to login HungTD34
   const handleLogin = async () => {
     var user = {
       email: email,
       password: password
     }
     var res = await axios.post("https://localhost:7113/api/auth/login", user)
-    if (res?.data?.data) {
-      sessionStorage.setItem("token", res?.data?.data)
-      window.location.reload()
+    if (res?.data?.code == 200) {
+      var user = jwtDecode(res?.data?.data)
+      //Check that the logged in account is of Admin HungTD34
+      if (user.role == "admin") {
+        sessionStorage.setItem("token", res?.data?.data)
+        window.location.reload()
+      }
+      else {
+        alert("This website only for admin! Please go to the public website for user.")
+      }
     }
   }
   return (
@@ -144,7 +154,7 @@ function SignIn() {
       <Layout className="layout-default layout-signin">
         <Header>
           <div className="header-col header-brand">
-            <h5>Muse Dashboard</h5>
+            <h5>Star Cinema</h5>
           </div>
           <div className="header-col header-nav">
             <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
@@ -174,9 +184,9 @@ function SignIn() {
               </Menu.Item>
             </Menu>
           </div>
-          <div className="header-col header-btn">
+          {/* <div className="header-col header-btn">
             <Button type="primary">FREE DOWNLOAD</Button>
-          </div>
+          </div> */}
         </Header>
         <Content className="signin">
           <Row gutter={[24, 0]} justify="space-around">

@@ -56,6 +56,8 @@ function UserDetails() {
         fecthData(params.id)
     }, [])
 
+
+    //Get data when form load HungTD34
     const fecthData = async (id) => {
         var res = await axios.get("https://localhost:7113/api/users/" + id)
 
@@ -75,6 +77,7 @@ function UserDetails() {
     //     setFormData({ ...formData, [e.target.name]: e.target.value });
     // };
 
+
     const handleChange = (e) => {
         if (e.target.name == "dob")
             form.setFieldsValue({
@@ -86,10 +89,12 @@ function UserDetails() {
             })
     };
 
+    //Set state of user when field is changes HungTD34
     const handleChangeDob = (e) => {
         setFormData({ ...formData, ['dob']: e });
     }
 
+    //Request API to update user HungTD34
     const onFinish = async (values) => {
         const user = {
             name: values.name,
