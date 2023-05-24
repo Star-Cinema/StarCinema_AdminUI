@@ -29,8 +29,9 @@ import Category from "./pages/Category";
 import Film from "./pages/Film";
 
 function App() {
-  // console.log(sessionStorage.getItem("token"))
-  //if(sessionStorage.getItem("token")?.length > 10)
+  //Check login HungTD34
+  console.log(sessionStorage.getItem("token"))
+  if(sessionStorage.getItem("token")?.length > 10)
   return (
     <div className="App">
       <Switch>
@@ -53,9 +54,9 @@ function App() {
       </Switch>
     </div>
   )
-  // else return(
-  //   <SignIn/>
-  // )
+  else return(
+    <SignIn/>
+  )
 }
 
 export default App;

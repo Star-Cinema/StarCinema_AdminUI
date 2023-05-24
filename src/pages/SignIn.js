@@ -128,6 +128,8 @@ function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+
+  //Request API to login HungTD34
   const handleLogin = async () => {
     var user = {
       email: email,
@@ -136,6 +138,7 @@ function SignIn() {
     var res = await axios.post("https://localhost:7113/api/auth/login", user)
     if (res?.data?.code == 200) {
       var user = jwtDecode(res?.data?.data)
+      //Check that the logged in account is of Admin HungTD34
       if (user.role == "admin") {
         sessionStorage.setItem("token", res?.data?.data)
         window.location.reload()
