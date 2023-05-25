@@ -20,7 +20,7 @@ import ImageUpload from "./ImageUpload";
 const { Option } = Select;
 const { TextArea } = Input;
 
-const FilmCreate = ({ loadData }) => {
+const FilmCreate = ({ loadData, listCategory }) => {
   // antd
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,27 +67,25 @@ const FilmCreate = ({ loadData }) => {
   //STARTREGION
   //VYVNK1 get all category
 
-  const [listCategory, setListCategory] = useState([]);
+  // const [listCategory, setListCategory] = useState([]);
+   const [isBusy, setBusy] = useState(false);
+  // const loadCategory = () => {
+  //   setBusy(true);
+  //   async function fetchData() {
+  //     axios
+  //       .get("https://localhost:7113/api/Categories?page=0&limit=10")
+  //       .then((response) => {
+  //         setBusy(false);
+  //         setListCategory(response.data.data.listItem);
+  //       });
+  //   }
 
-  const [isBusy, setBusy] = useState(true);
+  //   fetchData();
+  // };
 
-  const loadCategory = () => {
-    setBusy(true);
-    async function fetchData() {
-      axios
-        .get("https://localhost:7113/api/Categories?page=0&limit=10")
-        .then((response) => {
-          setBusy(false);
-          setListCategory(response.data.data.listItem);
-        });
-    }
-
-    fetchData();
-  };
-
-  useEffect(() => {
-    loadCategory();
-  }, []);
+  // useEffect(() => {
+  //   loadCategory();
+  // }, []);
 
   //END REGION
 
