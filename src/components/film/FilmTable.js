@@ -1,24 +1,46 @@
 import { React, useState, useEffect } from "react";
 import axios from "axios";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-
-import { Space, Table, Image } from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { Input } from "antd";
+import { Space, Table, Image, Tooltip, Button, Form, Select } from "antd";
 import FilmDelete from "./FilmDelete";
 import FilmCreate from "./FilmCreate";
 import FilmUpdate from "./FilmUpdate";
+const { Option } = Select;
 
 //START REGION
 //VYVNK1 FUNCTION TO DISPLAY LIST OF FILM
 const FilmTable = () => {
   const [filmAPI, setFilmAPI] = useState([]);
   const data = [];
+
   const [isBusy, setBusy] = useState(true);
+  // VYVNK1 FUNCTION SEARCH
+  const [searchData, setSearchData] = useState("");
+  const [listSearch, setListSearch] = useState([]);
+
+  const handleChange = (e) => {
+    setSearchData(e.target.value);
+  };
+
+  const handleSearch = () => {
+    console.log(searchData);
+    loadData();
+  };
+
+  // END FUNCTION SEARCH
 
   const loadData = () => {
     setBusy(true);
     async function fetchData() {
       axios
-        .get("https://localhost:7113/api/Films?page=0&limit=10")
+        .get(
+          `https://localhost:7113/api/Films?search=${searchData}&page=0&limit=10`
+        )
         .then((response) => {
           setBusy(false);
           setFilmAPI(response.data);
@@ -71,13 +93,21 @@ const FilmTable = () => {
   useEffect(() => {
     loadCategory();
   }, []);
+  // END GET LIST CATEGORY
 
   const columns = [
     {
       title: "",
       dataIndex: "image",
       key: "image",
-      render: (_, record) => <Image style={{borderRadius:"10px"}} width={70} height={80} src={record.image} />,
+      render: (_, record) => (
+        <Image
+          style={{ borderRadius: "10px" }}
+          width={70}
+          height={80}
+          src={record.image}
+        />
+      ),
     },
     {
       title: "Id",
@@ -177,7 +207,25 @@ const FilmTable = () => {
         <></>
       ) : (
         <>
-          <FilmCreate loadData={loadData} />
+          <FilmCreate loadData={loadData} listCategory={listCategory} />
+
+          <Space style={{ margin: "1.5em" }} direction="horizontal">
+            <Input
+              placeholder="Search Film..."
+              onChange={(e) => handleChange(e)}
+            />
+
+            <Button
+              shape="circle"
+              onClick={handleSearch}
+              style={{ background: "transparent" }}
+              type="primary"
+            >
+              {" "}
+              <SearchOutlined style={{ fontSize: "150%", color: "#1890ff" }} />
+            </Button>
+          </Space>
+
           <Table
             columns={columns.filter((item) => !item.hidden)}
             dataSource={data}
