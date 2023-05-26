@@ -1,0 +1,58 @@
+.search-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .search-input-container {
+    flex: 1;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+  }
+  
+  .search-button-container {
+    width: 40px;
+    background-color: #007bff;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .search-button {
+    padding: 8px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  
+  .search-button i {
+    color: #fff;
+  }
+
+  .searchDateTime .ant-picker-input input::placeholder {
+    color: black; /* Màu bạn muốn thiết lập */
+  }
+
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 16px;
+  }
+  .filter-item-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: #6a6a6a;
+  }
+  .filter-item .hidden {
+    opacity: 0;
+  }
+  
+  

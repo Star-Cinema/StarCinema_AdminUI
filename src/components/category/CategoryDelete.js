@@ -3,7 +3,11 @@ import {DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Tooltip, Modal, notification } from "antd";
 
+// START REGION
+// VYVNK1 DELETE CATEGORY
+
 const CategoryDelete = ({ id, name, loadData }) => {
+  //VYVNK1 FUNCTION TO DELETE CATEGORY
   const onDelete = (id, name) => {
     Modal.confirm({
       title: `Do you want to delete Category ${name}?`,
@@ -36,4 +40,5 @@ const CategoryDelete = ({ id, name, loadData }) => {
     </Tooltip>
   );
 };
+// END REGION
 export default CategoryDelete;

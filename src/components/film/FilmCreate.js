@@ -1,7 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 import {
   Tooltip,
@@ -13,7 +12,7 @@ import {
   Select,
   DatePicker,
   Row,
-  Col
+  Col,
 } from "antd";
 
 import ImageUpload from "./ImageUpload";
@@ -21,8 +20,7 @@ import ImageUpload from "./ImageUpload";
 const { Option } = Select;
 const { TextArea } = Input;
 
-const FilmCreate = ({ loadData }) => {
-
+const FilmCreate = ({ loadData, listCategory }) => {
   // antd
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,7 +43,9 @@ const FilmCreate = ({ loadData }) => {
 
   // end antd
 
-  // for upload image
+  //STARTREGION
+  // VyVNK1 for upload image
+
   const [imgLink, setImgLink] = useState("");
 
   const fetchImgLink = (value) => {
@@ -60,35 +60,34 @@ const FilmCreate = ({ loadData }) => {
         },
       ],
     });
+    console.log(value);
   };
+  //ENDREGION
 
-  //get all category
+  //STARTREGION
+  //VYVNK1 get all category
 
-  const [listCategory, setListCategory] = useState([]);
+  // const [listCategory, setListCategory] = useState([]);
+   const [isBusy, setBusy] = useState(false);
+  // const loadCategory = () => {
+  //   setBusy(true);
+  //   async function fetchData() {
+  //     axios
+  //       .get("https://localhost:7113/api/Categories?page=0&limit=10")
+  //       .then((response) => {
+  //         setBusy(false);
+  //         setListCategory(response.data.data.listItem);
+  //       });
+  //   }
 
-  const [isBusy, setBusy] = useState(true);
+  //   fetchData();
+  // };
 
-  
+  // useEffect(() => {
+  //   loadCategory();
+  // }, []);
 
-  const loadCategory = () => {
-    setBusy(true);
-    async function fetchData() {
-      axios
-        .get("https://localhost:7113/api/Categories?page=0&limit=10")
-        .then((response) => {
-          setBusy(false);
-          setListCategory(response.data.data.listItem);
-        });
-    }
-
-    fetchData();
-  };
-
-  useEffect(() => {
-    loadCategory();
-  }, []);
-
-  //end get all category
+  //END REGION
 
   const [formData, setFormData] = useState({
     name: "",
@@ -96,16 +95,15 @@ const FilmCreate = ({ loadData }) => {
   const [beError, setBeError] = useState("");
   const [displayErr, setdisplayErr] = useState(false);
 
-  const handleChange = async (value, name) => {
-    console.log(name + " " + value);
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  // const handleChange = async (value, name) => {
+  //   console.log(name + " " + value);
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value,
+  //   });
 
-    console.log(formData);
-  };
-
+  //   console.log(formData);
+  // };
 
   // GET DATE FROM DATEPICKER
   const onSelectDate = (date, dateString) => {
@@ -114,10 +112,12 @@ const FilmCreate = ({ loadData }) => {
       ...formData,
       release: date.format("YYYY-MM-DD"),
     });
-    console.log(formData);
   };
 
+  //START REGION
+  //VYVNK1 FUNCTION CREATE FILM
   const handleCreate = () => {
+    console.log(formData.image[0].path);
     axios
       .post(`https://localhost:7113/api/Films`, formData)
       .then(function (response) {
@@ -136,14 +136,16 @@ const FilmCreate = ({ loadData }) => {
         setdisplayErr(true);
       });
   };
+  //END REGION
 
+  //START REGION
+  //VYVNK1 UI OF CREATE FILM
   return (
     <>
       {isBusy ? (
         <></>
       ) : (
         <>
-          {/* <Link to={"/filmCreateDetail"}> */}
           <Tooltip title="Create Film">
             <Button
               style={{ marginBottom: "1em", background: "transparent" }}
@@ -155,7 +157,7 @@ const FilmCreate = ({ loadData }) => {
               />
             </Button>
           </Tooltip>
-          {/* </Link> */}
+
           <Modal
             visible={isModalOpen}
             title="Create a new Film"
@@ -175,7 +177,6 @@ const FilmCreate = ({ loadData }) => {
                 });
             }}
           >
-          
             <Form
               labelCol={{
                 span: 6,
@@ -190,200 +191,211 @@ const FilmCreate = ({ loadData }) => {
                 modifier: "public",
               }}
             >
-            <Row>
-            <Col lg={12} xs={24}>
-              <Form.Item
-                // onChange={(e) => handleChange(e)}
+              <Row>
+                <Col lg={12} xs={24}>
+                  <Form.Item
+                    // onChange={(e) => handleChange(e)}
 
-                onChange={(event) => {
-                  setFormData({ ...formData, name: event.target.value });
-                  console.log(formData);
-                }}
-                name="name"
-                label="Film Name"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input the Film name!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="category"
-                label="Category"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select a Category",
-                  },
-                ]}
-              >
-                <Select
-                  onChange={(value) => {
-                    setFormData({ ...formData, categoryId: value });
-                    console.log(formData);
-                  }}
-                  placeholder="Select a Category"
-                  allowClear
-                >
-                  {listCategory?.map((item) => (
-                    <Option value={item.id} key={item.id}>
-                      {item.name}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item
-                onChange={(event) => {
-                  setFormData({ ...formData, producer: event.target.value });
-                  console.log(formData);
-                }}
-                name="producer"
-                label="Producer"
-                rules={[
-                  {
-                    required: true,
-                    // pattern: new RegExp(/\d+/g),
-                    message: "Please input the Producer!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                onChange={(event) => {
-                  setFormData({ ...formData, director: event.target.value });
-                  console.log(formData);
-                }}
-                name="director"
-                label="Director"
-                rules={[
-                  {
-                    required: true,
-                    // pattern: new RegExp(/\d+/g),
-                    message: "Please input the Director!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                onChange={(event) => {
-                  setFormData({
-                    ...formData,
-                    duration: event.target.value,
-                    image: [
+                    onChange={(event) => {
+                      setFormData({ ...formData, name: event.target.value });
+                      console.log(formData);
+                    }}
+                    name="name"
+                    label="Film Name"
+                    rules={[
                       {
-                        name: "string",
-                        path: "string",
+                        required: true,
+                        message: "Please input the Film name!",
                       },
-                    ],
-                  });
-                  console.log(formData);
-                }}
-                name="duration"
-                label="Duration"
-                rules={[
-                  {
-                    required: true,
-                    // pattern: new RegExp(/\d+/g),
-                    message: "Please input the Duration!",
-                  },
-                  {
-                    pattern: new RegExp(/^[1-9]\d*$/),
-                    message:
-                      "Please input a valid positive interger number and duration must greater than 0!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                onChange={(event) => {
-                  setFormData({ ...formData, country: event.target.value });
-                  console.log(formData);
-                }}
-                name="country"
-                label="Country"
-                rules={[
-                  {
-                    required: true,
-                    // pattern: new RegExp(/\d+/g),
-                    message: "Please input the Country!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-</Col>
-<Col lg={12} xs={24}>
-              <Form.Item
-                label="Release Date: "
-                name="release"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select a date!",
-                  },
-                ]}
-              >
-                <DatePicker onChange={onSelectDate} />
-              </Form.Item>
-              <Form.Item
-                onChange={(event) => {
-                  setFormData({ ...formData, description: event.target.value });
-                  console.log(formData);
-                }}
-                name="description"
-                label="Description"
-                rules={[
-                  {
-                    required: true,
-                    message: "Missing area",
-                  },
-                ]}
-              >
-                <TextArea rows={4} />
-              </Form.Item>
-              <Form.Item
-                onChange={(event) => {
-                  setFormData({ ...formData, videoLink: event.target.value });
-                  console.log(formData);
-                }}
-                name="videoLink"
-                label="Video Link:"
-                rules={[
-                  {
-                    required: true,
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    name="category"
+                    label="Category"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select a Category",
+                      },
+                    ]}
+                  >
+                    <Select
+                      onChange={(value) => {
+                        setFormData({ ...formData, categoryId: value });
+                        console.log(formData);
+                      }}
+                      placeholder="Select a Category"
+                      allowClear
+                    >
+                      {listCategory?.map((item) => (
+                        <Option value={item.id} key={item.id}>
+                          {item.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    onChange={(event) => {
+                      setFormData({
+                        ...formData,
+                        producer: event.target.value,
+                      });
+                      console.log(formData);
+                    }}
+                    name="producer"
+                    label="Producer"
+                    rules={[
+                      {
+                        required: true,
+                        // pattern: new RegExp(/\d+/g),
+                        message: "Please input the Producer!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    onChange={(event) => {
+                      setFormData({
+                        ...formData,
+                        director: event.target.value,
+                      });
+                      console.log(formData);
+                    }}
+                    name="director"
+                    label="Director"
+                    rules={[
+                      {
+                        required: true,
+                        // pattern: new RegExp(/\d+/g),
+                        message: "Please input the Director!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    onChange={(event) => {
+                      setFormData({
+                        ...formData,
+                        duration: event.target.value,
+                      });
+                      console.log(formData);
+                    }}
+                    name="duration"
+                    label="Duration"
+                    rules={[
+                      {
+                        required: true,
+                        // pattern: new RegExp(/\d+/g),
+                        message: "Please input the Duration!",
+                      },
+                      {
+                        pattern: new RegExp(/^[1-9]\d*$/),
+                        message:
+                          "Please input a valid positive interger number and duration must greater than 0!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    onChange={(event) => {
+                      setFormData({ ...formData, country: event.target.value });
+                      console.log(formData);
+                    }}
+                    name="country"
+                    label="Country"
+                    rules={[
+                      {
+                        required: true,
+                        // pattern: new RegExp(/\d+/g),
+                        message: "Please input the Country!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col lg={12} xs={24}>
+                  <Form.Item
+                    label="Release Date: "
+                    name="release"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select a date!",
+                      },
+                    ]}
+                  >
+                    <DatePicker onChange={onSelectDate} />
+                  </Form.Item>
+                  <Form.Item
+                    onChange={(event) => {
+                      setFormData({
+                        ...formData,
+                        description: event.target.value,
+                        image: [
+                          {
+                            name: "string",
+                            path: "string",
+                          },
+                        ],
+                      });
+                      console.log(formData);
+                    }}
+                    name="description"
+                    label="Description"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Missing area",
+                      },
+                    ]}
+                  >
+                    <TextArea rows={4} />
+                  </Form.Item>
+                  <Form.Item
+                    onChange={(event) => {
+                      setFormData({
+                        ...formData,
+                        videoLink: event.target.value,
+                      });
+                      console.log(formData);
+                    }}
+                    name="videoLink"
+                    label="Video Link:"
+                    rules={[
+                      {
+                        required: true,
 
-                    message: "Please input the Video Link!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              
-              <Form.Item
-                name="image"
-                label="Image: "
-                rules={
-                  [
-                    // {
-                    //   required: true,
-                    //   // pattern: new RegExp(/\d+/g),
-                    //   message: "Please select an image!",
-                    // },
-                  ]
-                }
-              >
-                <ImageUpload fetchImgLink={fetchImgLink} />
-              </Form.Item>
-              </Col>
+                        message: "Please input the Video Link!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="image"
+                    label="Image: "
+                    rules={
+                      [
+                        // {
+                        //   required: true,
+                        //   // pattern: new RegExp(/\d+/g),
+                        //   message: "Please select an image!",
+                        // },
+                      ]
+                    }
+                  >
+                    <ImageUpload fetchImgLink={fetchImgLink} />
+                  </Form.Item>
+                </Col>
               </Row>
             </Form>
-            
           </Modal>
 
           {/* Display back end Error Message of create */}
@@ -403,5 +415,5 @@ const FilmCreate = ({ loadData }) => {
     </>
   );
 };
-
+// END REGION
 export default FilmCreate;
