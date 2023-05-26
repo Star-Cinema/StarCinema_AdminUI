@@ -1,10 +1,33 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { ChatContext } from "../context/ChatContext";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import avatarUserDefault from "../../assets/images/user.png"
+import avatarAdmin from "../../assets/images/admin.png"
+import { formatRelative } from 'date-fns/esm';
+import { ChatContext } from "../../context/ChatContext";
+
+// format date relative AnhNT282
+function formatDate(seconds) {
+  let formattedDate = '';
+
+  if (seconds) {
+    formattedDate = formatRelative(new Date(seconds * 1000), new Date());
+    // Capitalize first letter AnhNT282
+    formattedDate =
+      formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+  }
+  return formattedDate;
+}
+
 
 const Message = ({ message }) => {
-  const { currentUser } = useContext(AuthContext);
-  const { data } = useContext(ChatContext);
+
+  const [hasError, setHasError] = useState(false);
+
+  const { selectedUser } = useContext(ChatContext)
+
+  const handleImageError = () => {
+    setHasError(true);
+  };
+
 
   const ref = useRef();
 
@@ -15,22 +38,27 @@ const Message = ({ message }) => {
   return (
     <div
       ref={ref}
-      className={`message ${message.senderId === currentUser.uid && "owner"}`}
+      className={`message ${message.senderId === 'admin' && "owner"}`}
     >
       <div className="messageInfo">
-        <img
-          src={
-            message.senderId === currentUser.uid
-              ? currentUser.photoURL
-              : data.user.photoURL
-          }
-          alt=""
-        />
-        <span>just now</span>
+        {hasError ? (
+          <img src={avatarUserDefault} alt="Default Image" />
+        ) : (
+          <img
+            src={
+              message.senderId === 'admin'
+                ? avatarAdmin
+                : selectedUser.avatar
+            }
+            alt="" onError={handleImageError}
+          />
+        )}
+
       </div>
       <div className="messageContent">
-        <p>{message.text}</p>
-        {message.img && <img src={message.img} alt="" />}
+        <span style={{color: '#673AB7', fontSize: 13}}>{formatDate(message.createAt?.seconds)}</span>
+        <p>{message.content}</p>
+        {/* {message.img && <img src={message.img} alt="" />} */}
       </div>
     </div>
   );

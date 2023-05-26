@@ -1,15 +1,19 @@
 import React from 'react'
 import Sidebar from '../components/chat/Sidebar'
-// import Chat from '../components/chat/Chat'
+import Chat from '../components/chat/Chat'
+import '../style.scss'
+import { Card } from 'antd'
 
 const ChatPage = () => {
   return (
-    <div className='home'>
-      <div className="container">
-        <Sidebar/>
-        {/* <Chat/> */}
+    <Card style={{padding: "10px 50px"}}>
+      <div className='home'>
+        <div className="container">
+          <Sidebar />
+          <Chat />
+        </div>
       </div>
-    </div>
+    </Card>
   )
 }
 

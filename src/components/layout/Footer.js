@@ -24,7 +24,7 @@ function Footer() {
             © 2023, made with
             {<HeartFilled />} by
             <a href="#pablo" className="font-weight-bold" target="_blank">
-              Anh Nguyen
+              Team 2
             </a>
             for a better web.
           </div>

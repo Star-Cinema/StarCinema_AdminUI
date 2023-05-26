@@ -97,13 +97,6 @@ function SchedulesTable() {
     const [isAdding, setIsAdding] = useState(false);
     const [dataFilm, setDataFilm] = useState([])
     const [dataRoom, setDataRoom] = useState([])
-    const [formData, setFormData] = useState({
-        id: 0,
-        filmId: '',
-        roomId: '',
-        price: 0,
-        startTime: new Date(),
-    });
     const [selectedFilm, setSelectedFilm] = useState('');
     const [selectedRoom, setSelectedRoom] = useState('');
     const [selectedDate, setSelectedDate] = useState();
@@ -122,17 +115,8 @@ function SchedulesTable() {
         const convertedDate = parts.reverse().join('-');
         setSelectedDate(convertedDate);
     }
-    // Reset data in form data AnhNT282
-    const resetFormData = () => {
-        setFormData({
-            id: 0,
-            filmId: '',
-            roomId: '',
-            price: 0,
-            startTime: new Date(),
-        })
-    };
 
+    // get list room, list film AnhNT282
     useEffect(() => {
         (async () => {
             const dataFilmAPI = await axios.get(`https://localhost:7113/api/Films?page=0&pageSize=10000`);
@@ -152,27 +136,8 @@ function SchedulesTable() {
         getRecords();
     }, [page])
 
-    // Convert datetime local to format ISO
-    function convertToISO8601(dateTimeString) {
-        const [dateString, timeString] = dateTimeString.split(' ');
-        const [day, month, year] = dateString.split('/');
-        const [hour, minute] = timeString.split(':');
-        const date = new Date(year, month - 1, day, hour, minute);
-        const isoString = date.toISOString();
 
-        return isoString;
-    }
 
-    // set values field start time when datepicker changes value AnhNT282
-    const handleDatePickerChange = (date, dateTimeString) => {
-
-        try {
-            const time = convertToISO8601(dateTimeString);
-            setFormData({ ...formData, startTime: time });
-        } catch (error) {
-            console.log(error);
-        }
-    }
     // handle delete scheduled AnhNT282
     const onDelete = (id) => {
         Modal.confirm({
@@ -186,18 +151,26 @@ function SchedulesTable() {
             }
         });
     }
+    // handle add schedule AnhNT282
     const onAdd = async () => {
         setIsShowForm(false)
         setIsAdding(false);
+        const startTime = form.getFieldValue('startTime')?.toISOString();
+        const formData = {...form.getFieldsValue(), startTime: startTime};
         await axios.post(`https://localhost:7113/api/Schedules`, formData);
         getRecords();
     };
+    // handle edit schedule AnhNT282
     const onEdit = async () => {
         setIsShowForm(false)
         setIsEditing(false);
+        const startTime = form.getFieldValue('startTime')?.toISOString();
+        const formData = {...form.getFieldsValue(), startTime: startTime};
         await axios.put(`https://localhost:7113/api/Schedules/${formData.id}`, formData);
         getRecords();
     };
+
+    // Get list of schedules AnhNT282
     const getRecords = () => {
         setLoading(true);
         let query = `https://localhost:7113/api/Schedules?page=${page - 1}&limit=${pageSize}`;
@@ -209,7 +182,6 @@ function SchedulesTable() {
                 const data = [];
                 if (res.data != null) {
                     res.data.data.listItem.map((item, index) => {
-                        console.log(item);
                         data.push({
                             key: index,
                             ID: (
@@ -235,13 +207,6 @@ function SchedulesTable() {
                                     <EditTwoTone
                                         onClick={() => {
                                             setIsEditing(true);
-                                            setFormData({
-                                                id: item.id,
-                                                filmId: item.filmId,
-                                                roomId: item.roomId,
-                                                price: Number(item.ticket.price),
-                                                startTime: item.startTime,
-                                            })
                                             setIsShowForm(true);
                                             form.setFieldsValue({
                                                 id: item.id,
@@ -250,7 +215,6 @@ function SchedulesTable() {
                                                 startTime: moment(new Date(item.startTime), 'DD/MM/YYYY HH:mm'),
                                                 price: Number(item.ticket.price)
                                             })
-                                            console.log(formData)
                                         }} style={{ fontSize: 18, cursor: "pointer" }}></EditTwoTone>
                                     <DeleteOutlined onClick={() => onDelete(item.id)} style={{ fontSize: 18, color: "red", marginLeft: 12, cursor: "pointer" }}></DeleteOutlined>
                                 </>
@@ -348,7 +312,6 @@ function SchedulesTable() {
                                         <div className="filter-item">
                                             <div className="filter-item-label hidden">Add</div>
                                             <Button onClick={() => {
-                                                resetFormData();
                                                 setIsShowForm(true);
                                                 setIsAdding(true);
                                                 form.setFieldsValue({
@@ -404,9 +367,8 @@ function SchedulesTable() {
                                         wrapperCol={{ span: 18 }}
                                         layout="horizontal"
                                     >
-                                        {isEditing && <Form.Item label="Id" rules={[{ required: true }]}>
-                                            <Input name="Id"
-                                                value={formData?.id}
+                                        {isEditing && <Form.Item name="id" label="Id" rules={[{ required: true }]}>
+                                            <Input 
                                                 disabled
                                             />
                                         </Form.Item>}
@@ -414,20 +376,10 @@ function SchedulesTable() {
 
                                             rules={[
                                                 { required: true, message: "Select the film" },
-                                                {
-                                                    validator: (rule, value, callback) => {
-                                                        console.log("value", value);
-                                                        if (value === "Select") {
-                                                            callback("Select the film");
-                                                        }
-                                                        callback();
-                                                    }
-                                                }
                                             ]}
                                         >
                                             <Select name="filmId"
                                                 placeholder="Select a film"
-                                                onChange={(value) => setFormData({ ...formData, filmId: value })}
                                             >
                                                 {dataFilm?.map(item => (
                                                     <Option value={item.id} key={item.id}>
@@ -441,20 +393,10 @@ function SchedulesTable() {
 
                                             rules={[
                                                 { required: true, message: "Select the room" },
-                                                {
-                                                    validator: (rule, value, callback) => {
-                                                        console.log("value", value);
-                                                        if (value === "Select") {
-                                                            callback("Select the room");
-                                                        }
-                                                        callback();
-                                                    }
-                                                }
                                             ]}
                                         >
                                             <Select name="roomId"
                                                 placeholder="Select a room"
-                                                onChange={(value) => setFormData({ ...formData, roomId: value })}
                                             >
                                                 {dataRoom?.map(item => (
                                                     <Option value={item.id} key={item.id}>
@@ -469,7 +411,6 @@ function SchedulesTable() {
                                                 format={'DD/MM/YYYY HH:mm'}
                                                 showTime
                                                 disabledDate={(current) => current.isBefore(moment())}
-                                                onChange={handleDatePickerChange}
                                                 style={{
                                                     height: "auto",
                                                     width: "auto",
@@ -492,9 +433,6 @@ function SchedulesTable() {
                                             <Input
                                                 name="price"
                                                 type="number"
-                                                onChange={(event) => {
-                                                        setFormData({ ...formData, price: event.target.value });
-                                                }}
                                             />
                                         </Form.Item>
 

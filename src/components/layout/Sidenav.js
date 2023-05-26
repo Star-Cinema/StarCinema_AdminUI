@@ -13,7 +13,9 @@
 // import { useState } from "react";
 import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
-let logo = "https://bookmydoctor.netlify.app/static/media/logoApp.149b9c4999b4d9eee825.png";
+import logo from '../../assets/images/logoStart1.png'
+import chatIcon from '../../assets/images/chat50.png'
+// let logo = "https://bookmydoctor.netlify.app/static/media/logoApp.149b9c4999b4d9eee825.png";
 
 function Sidenav({ color }) {
   const { pathname } = useLocation();
@@ -59,6 +61,46 @@ function Sidenav({ color }) {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M4 5C4 3.89543 4.89543 3 6 3C6 4.65685 7.34315 6 9 6H11C12.6569 6 14 4.65685 14 3C15.1046 3 16 3.89543 16 5V16C16 17.1046 15.1046 18 14 18H6C4.89543 18 4 17.1046 4 16V5ZM7 9C6.44772 9 6 9.44772 6 10C6 10.5523 6.44772 11 7 11H7.01C7.56228 11 8.01 10.5523 8.01 10C8.01 9.44772 7.56228 9 7.01 9H7ZM10 9C9.44772 9 9 9.44772 9 10C9 10.5523 9.44772 11 10 11H13C13.5523 11 14 10.5523 14 10C14 9.44772 13.5523 9 13 9H10ZM7 13C6.44772 13 6 13.4477 6 14C6 14.5523 6.44772 15 7 15H7.01C7.56228 15 8.01 14.5523 8.01 14C8.01 13.4477 7.56228 13 7.01 13H7ZM10 13C9.44772 13 9 13.4477 9 14C9 14.5523 9.44772 15 10 15H13C13.5523 15 14 14.5523 14 14C14 13.4477 13.5523 13 13 13H10Z"
+        fill={color}
+      ></path>
+    </svg>,
+  ];
+
+  const bookings = [
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      key={0}
+    >
+      <path
+        d="M9 2C8.44772 2 8 2.44772 8 3C8 3.55228 8.44772 4 9 4H11C11.5523 4 12 3.55228 12 3C12 2.44772 11.5523 2 11 2H9Z"
+        fill={color}
+      ></path>
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4 5C4 3.89543 4.89543 3 6 3C6 4.65685 7.34315 6 9 6H11C12.6569 6 14 4.65685 14 3C15.1046 3 16 3.89543 16 5V16C16 17.1046 15.1046 18 14 18H6C4.89543 18 4 17.1046 4 16V5ZM7 9C6.44772 9 6 9.44772 6 10C6 10.5523 6.44772 11 7 11H7.01C7.56228 11 8.01 10.5523 8.01 10C8.01 9.44772 7.56228 9 7.01 9H7ZM10 9C9.44772 9 9 9.44772 9 10C9 10.5523 9.44772 11 10 11H13C13.5523 11 14 10.5523 14 10C14 9.44772 13.5523 9 13 9H10ZM7 13C6.44772 13 6 13.4477 6 14C6 14.5523 6.44772 15 7 15H7.01C7.56228 15 8.01 14.5523 8.01 14C8.01 13.4477 7.56228 13 7.01 13H7ZM10 13C9.44772 13 9 13.4477 9 14C9 14.5523 9.44772 15 10 15H13C13.5523 15 14 14.5523 14 14C14 13.4477 13.5523 13 13 13H10Z"
+        fill={color}
+      ></path>
+    </svg>,
+  ];
+
+  const services = [
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      key={0}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M6 2C5.44772 2 5 2.44772 5 3V4H4C2.89543 4 2 4.89543 2 6V16C2 17.1046 2.89543 18 4 18H16C17.1046 18 18 17.1046 18 16V6C18 4.89543 17.1046 4 16 4H15V3C15 2.44772 14.5523 2 14 2C13.4477 2 13 2.44772 13 3V4H7V3C7 2.44772 6.55228 2 6 2ZM6 7C5.44772 7 5 7.44772 5 8C5 8.55228 5.44772 9 6 9H14C14.5523 9 15 8.55228 15 8C15 7.44772 14.5523 7 14 7H6Z"
         fill={color}
       ></path>
     </svg>,
@@ -163,7 +205,7 @@ function Sidenav({ color }) {
   return (
     <>
       <div className="brand">
-        <img src={logo} style={{height:50}} alt="" />
+        <img src={logo}  alt="" />
       </div>
       <hr />
       <Menu theme="light" mode="inline">
@@ -193,20 +235,53 @@ function Sidenav({ color }) {
             <span className="label">Schedules</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="9">
-          <NavLink to="/UploadImage">
+
+        <Menu.Item key="3">
+          <NavLink to="/users">
             <span
               className="icon"
               style={{
-                background: page === "tables" ? color : "",
+                background: page === "users" ? color : "",
               }}
             >
-              {tables}
+              {profile}
             </span>
-            <span className="label">Upload Image</span>
+            <span className="label">User</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="3">
+
+
+        <Menu.Item key="4">
+          <NavLink to="/booking">
+            <span
+              className="icon"
+              style={{
+                background: page === "bookings" ? color : "",
+              }}
+            >
+              {bookings}
+            </span>
+            <span className="label">Booking</span>
+          </NavLink>
+        </Menu.Item>
+
+        <Menu.Item key="5">
+          <NavLink to="/service">
+            <span
+              className="icon"
+              style={{
+                background: page === "services" ? color : "",
+              }}
+            >
+              {services}
+            </span>
+            <span className="label">Service</span>
+          </NavLink>
+        </Menu.Item>
+
+        {/* <Menu.Item key="3"> */}
+
+        {/* <Menu.Item key="3">
           <NavLink to="/billing">
             <span
               className="icon"
@@ -218,9 +293,9 @@ function Sidenav({ color }) {
             </span>
             <span className="label">Billing</span>
           </NavLink>
-        </Menu.Item>
+        </Menu.Item> */}
         
-        <Menu.Item key="6">
+        {/* <Menu.Item key="6">
           <NavLink to="/profile">
             <span
               className="icon"
@@ -232,8 +307,8 @@ function Sidenav({ color }) {
             </span>
             <span className="label">Profile</span>
           </NavLink>
-        </Menu.Item>
-        <Menu.Item key="7">
+        </Menu.Item> */}
+        {/* <Menu.Item key="7">
           <NavLink to="/sign-in">
             <span className="icon">{signin}</span>
             <span className="label">Sign In</span>
@@ -243,6 +318,25 @@ function Sidenav({ color }) {
           <NavLink to="/sign-up">
             <span className="icon">{signup}</span>
             <span className="label">Sign Up</span>
+          </NavLink>
+        </Menu.Item> */}
+
+        <Menu.Item key="10">
+          <NavLink to="/category">
+           <span className="icon">{dashboard}</span>
+            <span className="label">Category</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="11">
+          <NavLink to="/film">
+           <span className="icon">{dashboard}</span>
+            <span className="label">Film</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="12">
+          <NavLink to="/chat">
+           <span className="icon"><img src={chatIcon} style={{height: 20}} alt=""/></span>
+            <span className="label">Chat</span>
           </NavLink>
         </Menu.Item>
       </Menu>
