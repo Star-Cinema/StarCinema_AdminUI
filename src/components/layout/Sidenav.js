@@ -14,6 +14,7 @@
 import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from '../../assets/images/logoStart1.png'
+import chatIcon from '../../assets/images/chat50.png'
 // let logo = "https://bookmydoctor.netlify.app/static/media/logoApp.149b9c4999b4d9eee825.png";
 
 function Sidenav({ color }) {
@@ -235,7 +236,7 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
 
-        <Menu.Item key="2">
+        <Menu.Item key="3">
           <NavLink to="/users">
             <span
               className="icon"
@@ -250,7 +251,7 @@ function Sidenav({ color }) {
         </Menu.Item>
 
 
-        <Menu.Item key="2">
+        <Menu.Item key="4">
           <NavLink to="/booking">
             <span
               className="icon"
@@ -264,7 +265,7 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
 
-        <Menu.Item key="2">
+        <Menu.Item key="5">
           <NavLink to="/service">
             <span
               className="icon"
@@ -330,6 +331,12 @@ function Sidenav({ color }) {
           <NavLink to="/film">
            <span className="icon">{dashboard}</span>
             <span className="label">Film</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="12">
+          <NavLink to="/chat">
+           <span className="icon"><img src={chatIcon} style={{height: 20}} alt=""/></span>
+            <span className="label">Chat</span>
           </NavLink>
         </Menu.Item>
       </Menu>
