@@ -204,7 +204,9 @@ function Sidenav({ color }) {
   return (
     <>
       <div className="brand">
-        <img src={logo}  alt="" />
+        <NavLink to="/dashboard">
+          <img src={logo} alt="" />
+        </NavLink>
       </div>
       <hr />
       <Menu theme="light" mode="inline">
@@ -293,7 +295,7 @@ function Sidenav({ color }) {
             <span className="label">Billing</span>
           </NavLink>
         </Menu.Item> */}
-        
+
         {/* <Menu.Item key="6">
           <NavLink to="/profile">
             <span
@@ -322,18 +324,26 @@ function Sidenav({ color }) {
 
         <Menu.Item key="10">
           <NavLink to="/category">
-           <span className="icon">{dashboard}</span>
+            <span className="icon">{dashboard}</span>
             <span className="label">Category</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="11">
           <NavLink to="/film">
-           <span className="icon">{dashboard}</span>
+            <span className="icon">{dashboard}</span>
             <span className="label">Film</span>
           </NavLink>
         </Menu.Item>
+
+        <Menu.Item key="13">
+          <NavLink to="/room">
+            <span className="icon">{dashboard}</span>
+            <span className="label">Room</span>
+          </NavLink>
+        </Menu.Item>
+
       </Menu>
-      
+
     </>
   );
 }

@@ -19,6 +19,7 @@ import SignIn from "./pages/SignIn";
 import Main from "./components/layout/Main";
 import Booking from './pages/Booking';
 import Service from "./pages/Service";
+import Room from '../src/pages/Room'
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";

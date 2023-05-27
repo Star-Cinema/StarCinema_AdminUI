@@ -18,7 +18,8 @@ import {
     Modal,
     Form,
     Select,
-    Input
+    Input,
+    Space
 } from "antd";
 
 import { DeleteOutlined, EditTwoTone } from "@ant-design/icons";
@@ -73,6 +74,7 @@ export default function Service() {
     const [totalItem, setTotalItem] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const [page, setPage] = useState(1);
+    const [keySearch, setKeySearch] = useState(''); // TuNT37 keyword search 
 
     const [isShowCreate, setIsShowCreate] = useState(false);    // TuNT37 set show form create
     const [isShowEdit, setIsShowEdit] = useState(false);        // TuNT37 set show form edit 
@@ -119,10 +121,9 @@ export default function Service() {
     // TuNT37 Get all record booking 
     const getRecords = (page, pageSize) => {
         setLoading(true);
-        axios.get(`https://localhost:7113/api/Service/GetAllServices?page=${page-1}&pageSize=${pageSize}`)
+        axios.get(`https://localhost:7113/api/Service/GetAllServices?keySearch=${keySearch}&page=${page-1}&pageSize=${pageSize}`)
             .then((res) => {
                 const data = [];
-                console.log('res', res.data.data.listItem);
                 if (res.data != null) {
                     res.data.data.listItem.map((item, index) => {
                         data.push({
@@ -147,7 +148,7 @@ export default function Service() {
                                             price: Number(item.price)
                                         })
                                     }} 
-                                    style={{ fontSize: 18, cursor: "pointer" }}></EditTwoTone>
+                                    style={{ fontSize: 18, cursor: "pointer", marginRight: 10 }}></EditTwoTone>
                                     <DeleteOutlined onClick={() => onDelete(item.id)} style={{ fontSize: 18, color: "red", marginLeft: 12, cursor: "pointer" }}></DeleteOutlined>
                                 </>
                             )
@@ -204,6 +205,11 @@ export default function Service() {
         setIsShowCreate(false);
     }
 
+    //Request API to search Booking
+    const handleSearch = () => {
+        getRecords(page, 10, keySearch)
+    }
+
     return (
         <>
             <div className="tabled">
@@ -212,10 +218,22 @@ export default function Service() {
                         <Card bordered={false} className="criclebox tablespace mb-24" >
                             <div style={HeaderTableStyles}>
                                 <span style={{ fontSize: 20, fontWeight: 600 }}> List Services </span>
-                                <Button onClick={async () => await handleShowFormCreate()} style={{ background: "#237804", color: "#ffffff" }}>
-                                    <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
-                                    Add
-                                </Button>
+                                <Space direction="horizontal">
+                                    <div className="search-container">
+                                        <div className="search-input-container">
+                                            <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKeySearch(e.target.value)}/>
+                                        </div>
+                                        <div className="search-button-container">
+                                            <button className="search-button" onClick={handleSearch}>
+                                                <i className="fas fa-search" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <Button onClick={async () => await handleShowFormCreate()} style={{ background: "#237804", color: "#ffffff" }}>
+                                        <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
+                                        Add
+                                    </Button>
+                                </Space>
                             </div>
                             <div className="table-responsive">
                                 <Table
@@ -223,12 +241,13 @@ export default function Service() {
                                     dataSource={services}
                                     loading={loading}
                                     pagination={{
+                                        defaultCurrent: 5,
                                         position: ["bottomCenter"],
                                         current: page,
                                         pageSize: pageSize,
                                         total: totalItem,
                                         showSizeChanger: true,
-                                        pageSizeOptions: ['10', '30', '50'],
+                                        pageSizeOptions: ['2', '5', '10', '20'],
                                         onChange: (page, pageSize) => {
                                             setPage(page);
                                             setPageSize(pageSize);
