@@ -44,6 +44,9 @@ const FilmTable = () => {
         .then((response) => {
           setBusy(false);
           setFilmAPI(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
         });
     }
 
