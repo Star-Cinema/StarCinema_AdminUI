@@ -36,6 +36,8 @@ const CategoryTable = () => {
         .then((response) => {
           setBusy(false);
           setCategoryAPI(response.data);
+        }).catch(function (error) {
+          console.log(error);
         });
     }
 

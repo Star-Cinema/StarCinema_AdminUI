@@ -12,9 +12,10 @@ import {
   Select,
   DatePicker,
   Col,
-  Row
+  Row,
 } from "antd";
 import ImageUpload from "./ImageUpload";
+import Test from "./Test";
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -72,9 +73,9 @@ const FilmUpdate = ({
         },
       ],
     });
-    console.log(value);
+    console.log(formData.image);
   };
-// END REGION--
+  // END REGION--
 
   const dataTable = {
     id: id,
@@ -107,11 +108,11 @@ const FilmUpdate = ({
     });
     console.log(formData);
   };
- // END REGION-- 
+  // END REGION--
 
- // START REGION-- VYVNK1 FUNC UPDATE IMAGE
+  // START REGION-- VYVNK1 FUNC UPDATE
   const handleCreate = async () => {
-    console.log(formData.image[0].path);
+    console.log(formData);
     await axios
       .put(`https://localhost:7113/api/Films/${formData.id}`, formData)
       .then(function (response) {
@@ -130,7 +131,7 @@ const FilmUpdate = ({
         setdisplayErr(true);
       });
   };
-  // END REGION-- 
+  // END REGION--
 
   useEffect(() => {
     form.setFieldsValue({
@@ -163,7 +164,7 @@ const FilmUpdate = ({
       </Tooltip>
 
       <Modal
-        width={1000}
+        width={1100}
         getContainer={false}
         visible={isModalOpen}
         title="Edit Film"
@@ -193,14 +194,10 @@ const FilmUpdate = ({
           layout="horizontal"
           name="form_in_modal"
           initialValues={{}}
-         
         >
           <Row>
             <Col lg={12} xs={24}>
-              <Form.Item
-                name="id"
-                label="Category Id"
-              >
+              <Form.Item name="id" label="Category Id">
                 <Input disabled={true} defaultValue={id} />
               </Form.Item>
               <Form.Item
@@ -361,7 +358,7 @@ const FilmUpdate = ({
                   console.log(formData);
                 }}
                 name="videoLink"
-                label="Video Link:"
+                label="Trailer (Youtube): "
                 rules={[
                   {
                     required: true,
@@ -385,7 +382,7 @@ const FilmUpdate = ({
                   ]
                 }
               >
-                <ImageUpload fetchImgLink={fetchImgLink} />
+                <Test fetchImgLink={fetchImgLink} imgPath={image} />
               </Form.Item>
             </Col>
           </Row>

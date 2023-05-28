@@ -49,7 +49,7 @@ const FilmCreate = ({ loadData, listCategory }) => {
   const [imgLink, setImgLink] = useState("");
 
   const fetchImgLink = (value) => {
-    console.log(value);
+    //console.log(value);
     setImgLink(value);
     setFormData({
       ...formData,
@@ -60,7 +60,7 @@ const FilmCreate = ({ loadData, listCategory }) => {
         },
       ],
     });
-    console.log(value);
+    //console.log(value);
   };
   //ENDREGION
 
@@ -90,7 +90,6 @@ const FilmCreate = ({ loadData, listCategory }) => {
   //END REGION
 
   const [formData, setFormData] = useState({
-    name: "",
   });
   const [beError, setBeError] = useState("");
   const [displayErr, setdisplayErr] = useState(false);
@@ -164,7 +163,7 @@ const FilmCreate = ({ loadData, listCategory }) => {
             okText="Create"
             cancelText="Back"
             onCancel={handleCancel}
-            width={1000}
+            width={1100}
             onOk={() => {
               form
                 .validateFields()
@@ -366,7 +365,7 @@ const FilmCreate = ({ loadData, listCategory }) => {
                       console.log(formData);
                     }}
                     name="videoLink"
-                    label="Video Link:"
+                    label="Trailer (Youtube):"
                     rules={[
                       {
                         required: true,
