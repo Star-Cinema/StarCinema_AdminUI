@@ -73,7 +73,7 @@ const FilmUpdate = ({
         },
       ],
     });
-    console.log(formData.image);
+    //console.log(formData.image);
   };
   // END REGION--
 
