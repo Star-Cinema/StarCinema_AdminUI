@@ -49,7 +49,7 @@ const FilmCreate = ({ loadData, listCategory }) => {
   const [imgLink, setImgLink] = useState("");
 
   const fetchImgLink = (value) => {
-    //console.log(value);
+    console.log(value);
     setImgLink(value);
     setFormData({
       ...formData,
@@ -60,7 +60,7 @@ const FilmCreate = ({ loadData, listCategory }) => {
         },
       ],
     });
-    //console.log(value);
+    console.log(value);
   };
   //ENDREGION
 
@@ -90,6 +90,12 @@ const FilmCreate = ({ loadData, listCategory }) => {
   //END REGION
 
   const [formData, setFormData] = useState({
+    image: [
+    {
+      name: "string",
+      path: "string",
+    },
+  ],
   });
   const [beError, setBeError] = useState("");
   const [displayErr, setdisplayErr] = useState(false);
@@ -133,6 +139,14 @@ const FilmCreate = ({ loadData, listCategory }) => {
         console.log(error.response.data.message);
         setBeError(error.response.data.message);
         setdisplayErr(true);
+        setFormData({
+          image: [
+          {
+            name: "string",
+            path: "string",
+          },
+        ],
+        });
       });
   };
   //END REGION
@@ -336,12 +350,7 @@ const FilmCreate = ({ loadData, listCategory }) => {
                       setFormData({
                         ...formData,
                         description: event.target.value,
-                        image: [
-                          {
-                            name: "string",
-                            path: "string",
-                          },
-                        ],
+                        
                       });
                       console.log(formData);
                     }}
