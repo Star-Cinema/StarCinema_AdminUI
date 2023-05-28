@@ -17,16 +17,17 @@ import {
     Typography,
     Modal,
     Form,
-    Select
+    Select,
+    Space
 } from "antd";
 
 import { DeleteOutlined, InfoOutlined } from "@ant-design/icons";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 const Option = Select.Option;
 const { Text } = Typography;
+const token = sessionStorage.getItem("token")
 
 //styles
 const HeaderTableStyles = {
@@ -81,6 +82,7 @@ const columns = [
 export default function Booking() {
 
     const [form] = Form.useForm();
+    const defaultCurrentPage = 5;  // Default current page size
 
     const [bookings, setBookings] = useState([]);   // TuNT37 bookings 
     const [booking, setBooking] = useState({});     // TuNT37 booking
@@ -89,10 +91,11 @@ export default function Booking() {
     const [services, setServices] = useState([]);   // TuNT37 services
     const [seats, setSeats] = useState([]);         // TuNT37 seats
 
-    const [loading, setLoading] = useState(false);  
-    const [totalItem, setTotalItem] = useState(0);  // TuNT37 totalItem
+    const [loading, setLoading] = useState(false);
+    const [totalPage, setTotalPage] = useState(0);  // TuNT37 totalPage
     const [pageSize, setPageSize] = useState(10);   // TuNT37 pageSize
     const [page, setPage] = useState(1);            // TuNT37 page
+    const [keySearch, setKeySearch] = useState(''); // TuNT37 keyword search 
 
     const [isShowInfo, setIsShowInfo] = useState(false);      // TuNT37 set show info booking detail
     const [isShowCreate, setIsShowCreate] = useState(false);  // TuNT37 set show form create 
@@ -112,7 +115,7 @@ export default function Booking() {
 
     // TuNT37 Call api and reRender record when change page/pageSize
     useEffect(() => {
-        getRecords(page, pageSize);
+        getRecords(page, pageSize, keySearch);
     }, [page, pageSize])
 
     // TuNT37 Convert to format date
@@ -132,15 +135,15 @@ export default function Booking() {
             cancelText: 'No',
             onOk: async () => {
                 await axios.delete(`https://localhost:7113/api/Bookings?id=${id}`);
-                getRecords(page, pageSize);
+                getRecords(page, pageSize, keySearch);
             }
         });
     }
 
     // TuNT37 Get all record booking 
-    const getRecords = (page, pageSize) => {
+    const getRecords = (page, pageSize, keySearch) => {
         setLoading(true);
-        axios.get(`https://localhost:7113/api/Bookings/GetAllByPage?page=${page - 1}&limit=${pageSize}`)
+        axios.get(`https://localhost:7113/api/Bookings/GetAllByPage?keySearch=${keySearch}&page=${page - 1}&pageSize=${pageSize}`)
             .then((res) => {
                 const data = [];
                 if (res.data != null) {
@@ -176,18 +179,18 @@ export default function Booking() {
                     })
                 }
                 setBookings(data);
-                setTotalItem(res.data.data.totalCount);
+                setTotalPage(res.data.data.totalCount);
                 setLoading(false);
             })
     }
 
     // TuNT37 Get Schedule by FilmId
     useEffect(() => {
-        if(!formData.filmId) 
-        axios.get(`https://localhost:7113/api/Schedules?filmId=${formData.filmId}`)
-            .then((response) => {
-                setSchedules(response.data.data.listItem);
-            });
+        if (!formData.filmId)
+            axios.get(`https://localhost:7113/api/Schedules?filmId=${formData.filmId}`)
+                .then((response) => {
+                    setSchedules(response.data.data.listItem);
+                });
     }, [formData.filmId])
 
     // TuNT37 Get Seat Not booked by filmId and scheduleId
@@ -213,9 +216,9 @@ export default function Booking() {
             .then((response) => {
                 setFilms(response.data.data);
             });
-        await axios.get(`https://localhost:7113/Service`)
+        await axios.get(`https://localhost:7113/api/Service/GetAllServices?page=0&pageSize=1000`)
             .then((response) => {
-                setServices(response.data.data);
+                setServices(response.data.data.listItem);
             });
         await setIsShowCreate(true);
     }
@@ -223,8 +226,8 @@ export default function Booking() {
     // TuNT37 handle on change 
     const handleOnChange = async (value, name) => {
         console.log(name + ' ' + value);
-        setFormData({ 
-            ...formData, 
+        setFormData({
+            ...formData,
             [name]: value
         });
     }
@@ -238,12 +241,25 @@ export default function Booking() {
             listServiceId: values.listServiceId,
             listSeatId: values.listSeatId,
         }
-        await axios.post(`https://localhost:7113/api/Bookings`, _formData)  // TuNT37 call api create booking 
-        .then((response) => {
-            console.log('response: ', response);
-        });
-        getRecords(page, pageSize);
+        await axios.post(`https://localhost:7113/api/Bookings/CreateBookingByAdmin`, _formData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })  // TuNT37 call api create booking 
+            .then((response) => {
+                console.log('response: ', response);
+            });
+        getRecords(page, pageSize, keySearch);
+        form.resetFields();
+        setFormData({ ...formData, filmId: null })
         setIsShowCreate(false);
+    }
+
+    //Request API to search Booking
+    const handleSearch = () => {
+        getRecords(page, pageSize, keySearch)
     }
 
     return (
@@ -256,10 +272,22 @@ export default function Booking() {
                                 <span style={{ fontSize: 20, fontWeight: 600 }}>List Bookings</span>
 
                                 {/* TuNT37 button add */}
-                                <Button onClick={async () => await handleShowFormCreate()} style={{ background: "#237804", color: "#ffffff" }}>
-                                    <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
-                                    Add
-                                </Button>
+                                <Space direction="horizontal">
+                                    <div className="search-container">
+                                        <div className="search-input-container">
+                                            <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKeySearch(e.target.value)}/>
+                                        </div>
+                                        <div className="search-button-container">
+                                            <button className="search-button" onClick={handleSearch}>
+                                                <i className="fas fa-search" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <Button onClick={async () => await handleShowFormCreate()} style={{ background: "#237804", color: "#ffffff" }}>
+                                        <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
+                                        Add
+                                    </Button>
+                                </Space>
                             </div>
                             <div className="table-responsive">
 
@@ -269,12 +297,13 @@ export default function Booking() {
                                     dataSource={bookings}
                                     loading={loading}
                                     pagination={{
+                                        defaultCurrent: defaultCurrentPage,
                                         position: ["bottomCenter"],
                                         current: page,
                                         pageSize: pageSize,
-                                        total: totalItem,
+                                        total: totalPage,
                                         showSizeChanger: true,
-                                        pageSizeOptions: ['10', '30', '50'],
+                                        pageSizeOptions: ['2', '5', '10', '20'],
                                         onChange: (page, pageSize) => {
                                             setPage(page);
                                             setPageSize(pageSize);
@@ -284,14 +313,15 @@ export default function Booking() {
                                 />
 
                                 {/* TuNT37  Modal create booking */}
-                                <Modal title='Create Booking' visible={isShowCreate} 
-                                    onOk={() => {form.validateFields().then(handleOk)} } 
+                                <Modal title='Create Booking' visible={isShowCreate}
+                                    onOk={() => { form.validateFields().then(handleOk) }}
                                     onCancel={() => {
                                         setIsShowCreate(false);
+                                        setFormData({ ...formData, filmId: null });
                                         form.resetFields();
-                                }}>
+                                    }}>
                                     <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} layout="horizontal" style={{ alignContent: "center" }} >
-                                        
+
                                         {/* TuNT37 Select Flim */}
                                         <Form.Item name="filmId" label="Film"
                                             rules={[
@@ -309,7 +339,7 @@ export default function Booking() {
                                             <Select name="filmId"
                                                 placeholder="Select a film"
                                                 allowClear
-                                                onChange={(value)=>handleOnChange(value, 'filmId')}
+                                                onChange={(value) => handleOnChange(value, 'filmId')}
                                             >
                                                 {films?.map(item => (
                                                     <Option value={item.id} key={item.id} name='filmId'>
@@ -320,7 +350,7 @@ export default function Booking() {
                                         </Form.Item>
 
                                         {/* TuNT37 if selected filmId then show schedule by filmId  */}
-                                        { formData.filmId && <Form.Item name="scheduleId" label="Schedule"
+                                        {formData.filmId && <Form.Item name="scheduleId" label="Schedule"
                                             rules={[
                                                 { required: true, message: "Select the schedule" },
                                                 {
@@ -336,7 +366,7 @@ export default function Booking() {
                                             <Select name="scheduleId"
                                                 placeholder="Select a schedule"
                                                 allowClear
-                                                onChange={(value)=>handleOnChange(value, 'scheduleId')}
+                                                onChange={(value) => handleOnChange(value, 'scheduleId')}
                                             >
                                                 {schedules?.map(item => (
                                                     <Option value={item.id} key={item.id} name='scheduleId'>
@@ -344,7 +374,7 @@ export default function Booking() {
                                                     </Option>
                                                 ))}
                                             </Select>
-                                        </Form.Item> }
+                                        </Form.Item>}
 
                                         {/* TuNT37 Select Seat */}
                                         <Form.Item name="listSeatId" label="Seat"

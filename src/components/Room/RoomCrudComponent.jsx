@@ -29,7 +29,7 @@ const RoomCrudComponent = () => {
             //   setRooms([...rooms, response.data]);
             const responsee = await axios.get(
                 "https://localhost:7113/api/Room?PageIndex=0&PageSize=10&SortColumn=Name&SortOrder=ASC"
-            ); // Replace with your API endpoint
+            ); // Replace with your API endpoint 
             setRooms(responsee.data.data);
             setNewRoom({ name: "", isDelete: false });
         } catch (error) {
@@ -52,6 +52,7 @@ const RoomCrudComponent = () => {
     };
 
     const deleteRoom = async (roomId) => {
+      console.log("room" + roomId);
         try {
             await axios.delete(`https://localhost:7113/api/Room?id=${roomId}`); // Replace with your API endpoint
             const updatedRooms = rooms.filter((room) => room.id !== roomId);
@@ -85,6 +86,7 @@ const RoomCrudComponent = () => {
             />
             <input
               type="checkbox"
+              hidden="true"
               checked={room.isDelete}
               onChange={(e) =>
                 updateRoom(room.id, { name: room.name, isDelete: e.target.checked })
