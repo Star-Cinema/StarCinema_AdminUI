@@ -36,7 +36,7 @@ import { BrowserRouter } from "react-router-dom/cjs/react-router-dom.min";
 function App() {
   //Check login HungTD34
   console.log(sessionStorage.getItem("token"))
-  // if (sessionStorage.getItem("token")?.length > 10)
+  if (sessionStorage.getItem("token")?.length > 10)
     return (
       <div className="App">
         <Switch>
@@ -67,9 +67,9 @@ function App() {
 
       </div>
     )
-  // else return (
-  //   <SignIn />
-  // )
+  else return (
+    <SignIn />
+  )
   
 }
 
