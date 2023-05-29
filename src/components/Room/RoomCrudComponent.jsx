@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Table, Input, Space, Button } from "antd";
+import { Table, Input, Space, Button, notification } from "antd";
 
 const RoomCrudComponent = () => {
     const [rooms, setRooms] = useState([]);
@@ -38,22 +38,30 @@ const RoomCrudComponent = () => {
             ); // Replace with your API endpoint
             setRooms(responsee.data.data);
             setNewRoom({ name: "", isDelete: false });
+            notification.open({
+                message: "Notification",
+                description: "Add Room successfully!",
+                duration: 3,
+                placement: "topRight",
+            });
         } catch (error) {
             console.error("Error creating room:", error);
+            notification.open({
+                message: "Notification",
+                description: "Add Room failed!",
+                duration: 3,
+                placement: "topRight",
+            });
         }
     };
 
     const updateRoom = async (roomId, updatedRoom) => {
         try {
             let newArr = rooms;
-            const index = newArr.findIndex(
-                (item) => item.id === roomId
-            );
+            const index = newArr.findIndex((item) => item.id === roomId);
             if (index !== -1) {
                 newArr[index].name = updatedRoom.name; // Update the desired property directly
             }
-
-            
             setRooms([...newArr]);
         } catch (error) {
             console.error("Error updating room:", error);
@@ -68,19 +76,43 @@ const RoomCrudComponent = () => {
                 isDelete: false,
             };
             await axios.put(`https://localhost:7113/api/Room`, r); // Replace with your API endpoint
+            notification.open({
+                message: "Notification",
+                description: "Update Room successfully!",
+                duration: 3,
+                placement: "topRight",
+            });
             fetchRooms();
         } catch (error) {
             console.error("Error updating room:", error);
+            notification.open({
+                message: "Notification",
+                description: "Update Room Failed!",
+                duration: 3,
+                placement: "topRight",
+            });
         }
-    }
+    };
     const deleteRoom = async (roomId) => {
         console.log("room" + roomId);
         try {
             await axios.delete(`https://localhost:7113/api/Room?id=${roomId}`); // Replace with your API endpoint
             const updatedRooms = rooms.filter((room) => room.id !== roomId);
             setRooms(updatedRooms);
+            notification.open({
+                message: "Notification",
+                description: "Delete Room successfully!",
+                duration: 3,
+                placement: "topRight",
+            });
         } catch (error) {
             console.error("Error deleting room:", error);
+            notification.open({
+                message: "Notification",
+                description: "Delete Room Failed!",
+                duration: 3,
+                placement: "topRight",
+            });
         }
     };
     const handleTableChange = (pagination) => {
