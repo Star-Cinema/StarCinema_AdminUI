@@ -8,7 +8,7 @@ const ChatPage = () => {
   return (
     <Card style={{padding: "10px 50px"}}>
       <div className='home'>
-        <div className="container">
+        <div className="container-chat">
           <Sidebar />
           <Chat />
         </div>

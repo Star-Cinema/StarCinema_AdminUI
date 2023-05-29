@@ -15,11 +15,13 @@ import {
     Form,
     DatePicker,
     Select,
-    Space
+    Space,
+    message,
+    notification
 } from "antd";
 
 import '../assets/styles/schedulePage.css';
-import {  DeleteOutlined,  EditTwoTone,  } from "@ant-design/icons";
+import { DeleteOutlined, EditTwoTone, } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -100,6 +102,8 @@ function SchedulesTable() {
     const [selectedFilm, setSelectedFilm] = useState('');
     const [selectedRoom, setSelectedRoom] = useState('');
     const [selectedDate, setSelectedDate] = useState();
+    const [messageApi, contextHolder] = message.useMessage();
+    const [api, contextHolder1] = notification.useNotification();
 
 
     const handleFilmChange = (value) => {
@@ -145,29 +149,63 @@ function SchedulesTable() {
             okText: 'Yes',
             okType: 'danger',
             cancelText: 'No',
-            onOk: async () => {
-                await axios.delete(`https://localhost:7113/api/Schedules/${id}`);
-                getRecords();
+            onOk: () => {
+                axios.delete(`https://localhost:7113/api/Schedules/${id}`).then((response) => {
+                    messageApi.open({
+                        type: 'success',
+                        content: response.data?.message,
+                    });
+                    getRecords();
+                }).catch((error) => {
+                    messageApi.open({
+                        type: 'error',
+                        content: error.message,
+                    });
+                });
             }
         });
     }
     // handle add schedule AnhNT282
-    const onAdd = async () => {
+    const onAdd = () => {
         setIsShowForm(false)
         setIsAdding(false);
         const startTime = form.getFieldValue('startTime')?.toISOString();
-        const formData = {...form.getFieldsValue(), startTime: startTime};
-        await axios.post(`https://localhost:7113/api/Schedules`, formData);
-        getRecords();
+        const formData = { ...form.getFieldsValue(), startTime: startTime };
+        axios.post(`https://localhost:7113/api/Schedules`, formData)
+            .then((response) => {
+                messageApi.open({
+                    type: 'success',
+                    content: 'Successfully added'
+                });
+                getRecords();
+
+            }).catch((error) => {
+                api['error']({
+                    message: 'Error',
+                    description: error.response?.data?.message
+                });
+            });
     };
     // handle edit schedule AnhNT282
-    const onEdit = async () => {
+    const onEdit = () => {
         setIsShowForm(false)
         setIsEditing(false);
         const startTime = form.getFieldValue('startTime')?.toISOString();
-        const formData = {...form.getFieldsValue(), startTime: startTime};
-        await axios.put(`https://localhost:7113/api/Schedules/${formData.id}`, formData);
-        getRecords();
+        const formData = { ...form.getFieldsValue(), startTime: startTime };
+        axios.put(`https://localhost:7113/api/Schedules/${formData.id}`, formData)
+            .then((response) => {
+                messageApi.open({
+                    type: 'success',
+                    content: 'Successfully edited'
+                });
+                getRecords();
+
+            }).catch((error) => {
+                api['error']({
+                    message: 'Error',
+                    description: error.response?.data?.message
+                });
+            });;
     };
 
     // Get list of schedules AnhNT282
@@ -235,6 +273,8 @@ function SchedulesTable() {
 
     return (
         <>
+            {contextHolder}
+            {contextHolder1}
             <div className="tabled">
                 <Row gutter={[24, 0]}>
                     <Col xs="24" xl={24}>
@@ -342,7 +382,7 @@ function SchedulesTable() {
                                         pageSize: pageSize,
                                         total: totalItem,
                                         showSizeChanger: true,
-                                        pageSizeOptions: ['10', '30', '50'],
+                                        pageSizeOptions: ['5', '10', '15'],
                                         onChange: (page, pageSize) => {
                                             setPage(page);
                                             setPageSize(pageSize);
@@ -368,7 +408,7 @@ function SchedulesTable() {
                                         layout="horizontal"
                                     >
                                         {isEditing && <Form.Item name="id" label="Id" rules={[{ required: true }]}>
-                                            <Input 
+                                            <Input
                                                 disabled
                                             />
                                         </Form.Item>}

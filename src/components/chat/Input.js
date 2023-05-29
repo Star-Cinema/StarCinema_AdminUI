@@ -52,7 +52,7 @@ const Input = () => {
             fontSize: '32px',
             marginLeft:"10px",
             marginRight:"20px",
-            color:"#007aec"
+            color: text ? "#007aec" : "#000000bd"
           }}
         />
         {/* </button> */}
