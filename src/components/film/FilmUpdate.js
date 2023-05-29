@@ -212,6 +212,7 @@ const FilmUpdate = ({
                     required: true,
                     message: "Please input the Film name!",
                   },
+                  { max: 50, message: 'Film Name must be max 50 characters.' },
                 ]}
               >
                 <Input />
@@ -254,6 +255,7 @@ const FilmUpdate = ({
                     // pattern: new RegExp(/\d+/g),
                     message: "Please input the Producer!",
                   },
+                  { max: 50, message: 'Producer must be max 50 characters.' },
                 ]}
               >
                 <Input />
@@ -271,6 +273,7 @@ const FilmUpdate = ({
                     // pattern: new RegExp(/\d+/g),
                     message: "Please input the Director!",
                   },
+                  { max: 50, message: 'Director must be max 50 characters.' },
                 ]}
               >
                 <Input />
@@ -296,6 +299,7 @@ const FilmUpdate = ({
                     message:
                       "Please input a valid positive interger number and duration must greater than 0!",
                   },
+                  { max: 50, message: 'Duration must be max 50 characters.' },
                 ]}
               >
                 <Input />
@@ -313,6 +317,7 @@ const FilmUpdate = ({
                     // pattern: new RegExp(/\d+/g),
                     message: "Please input the Country!",
                   },
+                  { max: 50, message: 'Country must be max 50 characters.' },
                 ]}
               >
                 <Input />
@@ -348,6 +353,7 @@ const FilmUpdate = ({
                     required: true,
                     message: "Missing area",
                   },
+                  { max: 1000, message: 'Description must be max 1000 characters.' },
                 ]}
               >
                 <TextArea rows={4} />
@@ -365,6 +371,7 @@ const FilmUpdate = ({
 
                     message: "Please input the Video Link!",
                   },
+                  { max: 50, message: 'Video link must be max 50 characters.' },
                 ]}
               >
                 <Input />
