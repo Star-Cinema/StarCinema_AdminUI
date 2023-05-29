@@ -69,29 +69,39 @@ const RoomCrudComponent = () => {
     };
     const handleFormSubmit = async (roomId, name) => {
         console.log("id: ", name);
-        try {
-            const r = {
-                id: roomId,
-                name: name,
-                isDelete: false,
-            };
-            await axios.put(`https://localhost:7113/api/Room`, r); // Replace with your API endpoint
+        if(name === null){
             notification.open({
                 message: "Notification",
-                description: "Update Room successfully!",
+                description: "Please enter a value!",
                 duration: 3,
                 placement: "topRight",
             });
-            fetchRooms();
-        } catch (error) {
-            console.error("Error updating room:", error);
-            notification.open({
-                message: "Notification",
-                description: "Update Room Failed!",
-                duration: 3,
-                placement: "topRight",
-            });
+        }else{
+            try {
+                const r = {
+                    id: roomId,
+                    name: name,
+                    isDelete: false,
+                };
+                await axios.put(`https://localhost:7113/api/Room`, r); // Replace with your API endpoint
+                notification.open({
+                    message: "Notification",
+                    description: "Update Room successfully!",
+                    duration: 3,
+                    placement: "topRight",
+                });
+                fetchRooms();
+            } catch (error) {
+                console.error("Error updating room:", error);
+                notification.open({
+                    message: "Notification",
+                    description: "Update Room Failed, please enter value not null!",
+                    duration: 3,
+                    placement: "topRight",
+                });
+            }
         }
+        
     };
     const deleteRoom = async (roomId) => {
         console.log("room" + roomId);
