@@ -24,7 +24,7 @@ const Chat = () => {
 
   return (
     <div className="chat">
-      <div className="chatInfo" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <div className="chatInfo" style={{ display: "flex", alignItems: "center", justifyContent:"left" }}>
         {selectedUser &&
           (<>
             {hasError ? (
