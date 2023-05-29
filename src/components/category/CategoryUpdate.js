@@ -126,6 +126,7 @@ const CategoryUpdate = ({ id, name, loadData }) => {
                 // pattern: new RegExp(/\d+/g),
                 message: "Please input the Category name!",
               },
+              { max: 50, message: 'Category Name must be max 50 characters.' },
             ]}
           >
             <Input  />
