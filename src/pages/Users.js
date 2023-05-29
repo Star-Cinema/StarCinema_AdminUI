@@ -91,7 +91,14 @@ function User() {
     //Get data when page load HungTD34
     const fecthData = async (page = 1, pageSize = 10, key = "", sortBy = "id") => {
         setLoading(true)
-        var res = await axios.get("https://localhost:7113/api/users?page=" + page + "&pageSize=" + pageSize + "&key=" + key + "&sortBy=" + sortBy)
+        var res = await axios.get(
+            "https://localhost:7113/api/users?page=" + page + "&pageSize=" + pageSize + "&key=" + key + "&sortBy=" + sortBy,
+            {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            }
+        )
         const data = []
 
         //Convert records to rows for display HungTD34
@@ -168,7 +175,12 @@ function User() {
 
     //Request API to disable user HungTD34
     const handleDeleteUser = async (id) => {
-        var res = await axios.delete("https://localhost:7113/api/users/" + id)
+        var res = await axios.delete("https://localhost:7113/api/users/" + id,
+        {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
         console.log(res.data)
         if (res?.data?.code == 200) window.location.reload()
     }
@@ -187,7 +199,12 @@ function User() {
         data.avatar = url
         data.dob = data.dob.toISOString()
 
-        var res = await axios.post("https://localhost:7113/api/users/create", data)
+        var res = await axios.post("https://localhost:7113/api/users/create", data,
+        {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
         console.log(res)
         setIsModalOpen(false);
 
