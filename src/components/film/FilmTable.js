@@ -19,6 +19,7 @@ const FilmTable = () => {
   const data = [];
 
   const [isBusy, setBusy] = useState(true);
+
   // VYVNK1 FUNCTION SEARCH
   const [searchData, setSearchData] = useState("");
   const [listSearch, setListSearch] = useState([]);
@@ -216,6 +217,7 @@ const FilmTable = () => {
             <Input
               placeholder="Search Film..."
               onChange={(e) => handleChange(e)}
+              maxLength={50}
             />
 
             <Button
