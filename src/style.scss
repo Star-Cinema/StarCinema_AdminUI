@@ -53,7 +53,7 @@
         width: 250px;
         border-bottom: 1px solid #a7bcff;
         &::placeholder {
-          color: rgb(175, 175, 175);
+          color: rgb(0, 0, 0);
         }
       }
 
@@ -88,19 +88,16 @@
 }
 
 .home {
-  // background-color: #a7bcff;
-  // height: 100%;
-  // // max-height: 800px;
-  // min-height: 800px;
-  height: 750px;
+  // height: 750px;
+  height: 550px;
   display: flex;
   align-items: center;
   justify-content: center;
 
   
-  .container {
+  .container-chat {
     border: 2px solid #eeeeee;
-    box-shadow: 3px 3px 3px 3px 15px #000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     // border: 1px solid white;
     border-radius: 5px;
     // width: 65%;
@@ -113,15 +110,18 @@
     }
 
     .sidebar {
-      flex: 1;
-      background-color: #eeeeee;
+      flex: 1 1;
+      background-color: #c8c8c824;
       position: relative;
+      border-right: 1px solid #b7b7b75c;
 
       .navbar {
+        height: 70px;
+
         display: flex;
         align-items: center;
-        background-color: #2f2d52;
-        height: 50px;
+        background-color: #007aec;
+        // height: 50px;
         padding: 10px;
         justify-content: space-between;
         color: #ddddf7;
@@ -172,10 +172,14 @@
 
 
             &::placeholder {
-              color: lightgray;
+              color: #000;
             }
           }
         }
+      }
+
+      .userChat-selected {
+        background: wheat;
       }
 
       .userChat {
@@ -187,7 +191,7 @@
         cursor: pointer;
 
         &:hover {
-          background-color: #2f2d52;
+          background-color: #b7b7b7;
         }
 
         img {
@@ -203,8 +207,12 @@
             font-weight: 500;
           }
           p {
+            width: 180px;
+            color: #000000d1;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
             font-size: 14px;
-            color: lightgray;
           }
         }
       }
@@ -213,8 +221,9 @@
       flex: 3;
 
       .chatInfo {
-        height: 50px;
-        background-color: #5d5b8d;
+        height: 70px;
+        // background-color: #0084ff;
+        background-color: #007aec;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -263,7 +272,7 @@
             flex-direction: column;
 
             p {
-              background-color: white;
+              background-color: #e4e6eb;
               color: #000000eb;
               padding: 10px 20px;
               border-radius: 0px 10px 10px 10px;
@@ -281,7 +290,8 @@
             .messageContent {
               align-items: flex-end;
               p {
-                background-color: #6e89e5;
+                // background-color: #6e89e5;
+                background-color: #007aec;
                 color: white;
                 border-radius: 10px 0px 10px 10px;
               }
@@ -302,7 +312,7 @@
           width: 100%;
           border: none;
           outline: none;
-          color: #2f2d52;
+          color: #000;
           font-size: 18px;
 
           // border: 1px solid;
@@ -315,7 +325,7 @@
         
 
           &::placeholder {
-            color: lightgray;
+            color: #000;
           }
         }
 

@@ -233,14 +233,14 @@ function SignIn() {
                   <Input placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   name="remember"
                   className="aligin-center"
                   valuePropName="checked"
                 >
                   <Switch defaultChecked onChange={onChange} />
                   Remember me
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item>
                   <Button
@@ -252,12 +252,12 @@ function SignIn() {
                     SIGN IN
                   </Button>
                 </Form.Item>
-                <p className="font-semibold text-muted">
+                {/* <p className="font-semibold text-muted">
                   Don't have an account?{" "}
                   <Link to="/sign-up" className="text-dark font-bold">
                     Sign Up
                   </Link>
-                </p>
+                </p> */}
               </Form>
             </Col>
             <Col

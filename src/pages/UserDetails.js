@@ -27,6 +27,7 @@ import {
     InstagramOutlined,
     VerticalAlignTopOutlined,
     PlusOutlined,
+    UploadOutlined
 } from "@ant-design/icons";
 
 import BgProfile from "../assets/images/bg-profile.jpg";
@@ -42,6 +43,8 @@ import project3 from "../assets/images/home-decor-3.jpeg";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
 import moment from "moment";
+
+import {UploadImageAPI} from '../../src/assets/js/public.js'
 const { Title } = Typography;
 
 function UserDetails() {
@@ -59,7 +62,12 @@ function UserDetails() {
 
     //Get data when form load HungTD34
     const fecthData = async (id) => {
-        var res = await axios.get("https://localhost:7113/api/users/" + id)
+        var res = await axios.get("https://localhost:7113/api/users/" + id,
+        {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
 
         form.setFieldsValue({
             name: res?.data?.data?.name,
@@ -97,15 +105,28 @@ function UserDetails() {
     //Request API to update user HungTD34
     const onFinish = async (values) => {
         const user = {
+            email: values.email,
             name: values.name,
             phone: values.phone,
             dob: values.dob.toISOString(),
             gender: values.gender,
-            avatar: "https://phantom-marca.unidadeditorial.es/d95391aca2763399902acf13ad9f0a15/resize/1320/f/jpg/assets/multimedia/imagenes/2023/01/11/16734647441243.jpg"
+            avatar: imageURL? imageURL : formData?.avatar
         }
 
-        var res = await axios.put("https://localhost:7113/api/users/"+params.id, user)
-        if(res?.data?.code == 200) history.push("/users")
+        var res = await axios.put("https://localhost:7113/api/users/" + params.id, user,
+        {
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                "Content-Type" : "application/json"
+            }
+        })
+        if (res?.data?.code == 200) history.push("/users")
+    }
+
+    const handleUpload = async (e) =>{
+        console.log(e.file)
+        var url = await UploadImageAPI(e.file)
+        setImageURL(url)
     }
 
     return (
@@ -168,6 +189,19 @@ function UserDetails() {
                             <Form.Item label="Role" name="role">
                                 <Input disabled />
                             </Form.Item>
+                            <Form.Item name='imageUpload'>
+                                <Upload
+                                    multiple={false}
+                                    name="imageUpload"
+                                    listType="picture"
+                                    customRequest={handleUpload}
+                                    // beforeUpload={() => false}
+                                    defaultFileList={[]}
+                                >
+                                    <Button icon={<UploadOutlined />}>Upload</Button>
+                                </Upload>
+                            </Form.Item>
+
                             <Form.Item label="Gender" name="gender"
                                 rules={[{ required: true }]}
                             >
@@ -176,7 +210,7 @@ function UserDetails() {
                                     <Radio value={false}> FeMale </Radio>
                                 </Radio.Group>
                             </Form.Item>
-                            <Form.Item style={{textAlign:"center"}}>
+                            <Form.Item style={{ textAlign: "center" }}>
                                 <Button htmlType="submit" type="primary">Save</Button>
                             </Form.Item>
                         </Form>
@@ -197,7 +231,7 @@ function UserDetails() {
                                         <Image
                                             width={200}
                                             height={200}
-                                            src={formData?.avatar}
+                                            src={imageURL? imageURL : formData?.avatar}
                                             style={{ objectFit: "cover" }}
                                         />
                                         <div className="avatar-info">

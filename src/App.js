@@ -56,6 +56,7 @@ function App() {
               <Route exact path="/users/:id" component={UserDetails} />
               <Route exact path="/category" component={Category} />
               <Route exact path="/film" component={Film} />
+              <Route exact path="/room" component={Room} />
               <Route exact path="/billing" component={Billing} />
               <Route exact path="/profile" component={Profile} />
               <ChatProvider>

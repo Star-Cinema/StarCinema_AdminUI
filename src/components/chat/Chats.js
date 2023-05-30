@@ -13,28 +13,28 @@ const Chats = () => {
   };
 
 
-  const { users, setSelectedUser } = useContext(ChatContext);
+  const { users, selectedUser, setSelectedUser } = useContext(ChatContext);
 
 
   return (
     <div className="chats">
       {users && users.map((user) => (
         <div
-          className="userChat"
           key={user.id}
+          className={selectedUser ? (selectedUser.id == user.id ? "userChat userChat-selected" : "userChat") : "userChat"}
           onClick={() => setSelectedUser(user)}
-          style={{marginLeft: 10}}
+          style={{ paddingLeft: 20 }}
         >
           <div>
             {hasError ? (
-              <img src={avatarUserDefault} alt="Default Image" />
+              <img src={avatarUserDefault} alt="Default Image" style={{ border: "1px solid #000" }} />
             ) : (
-              <img src={user.avatar} alt="Image" onError={handleImageError} />
+              <img src={user.avatar} alt="Image" onError={handleImageError} style={{ border: "1px solid #000" }} />
             )}
           </div>
           <div className="userChatInfo">
-            <span>{user.name}</span>
-            {user.lastMessage?.senderId == 'admin' ? <p>You: {user.lastMessage?.content}</p> : <p>{user.lastMessage?.content}</p>}
+            <span style={{ color: "#2196F3" }}>{user.name}</span>
+            {user.lastMessage?.senderId == 'admin' ? <p style={{ color: "#000" }}>You: {user.lastMessage?.content}</p> : <p>{user.lastMessage?.content}</p>}
           </div>
         </div>
       ))}
