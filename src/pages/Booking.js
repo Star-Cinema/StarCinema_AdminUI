@@ -26,6 +26,7 @@ import {
 import { DeleteOutlined, InfoOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ExportBooking from "../components/Export/ExportBooking";
 
 const Option = Select.Option;
 const { Text } = Typography;
@@ -61,7 +62,7 @@ const columns = [
     {
         key: "status",
         dataIndex: "status",
-        title: "Stutus",
+        title: "Status",
     },
     {
         key: "totalPrice",
@@ -86,6 +87,8 @@ export default function Booking() {
     const [form] = Form.useForm();
     const defaultCurrentPage = 5;  // Default current page size
 
+    const [csvAllData, setCsvAllData] = useState([]);
+    const [csvData, setCsvData] = useState([]);
     const [bookings, setBookings] = useState([]);   // TuNT37 bookings 
     const [booking, setBooking] = useState({});     // TuNT37 booking
     const [films, setFilms] = useState([]);         // TuNT37 flims
@@ -111,6 +114,20 @@ export default function Booking() {
         listServiceId: [],
         listSeatId: [],
     });
+
+
+    let _date = new Date();
+    let _currentDate = _date.getFullYear() + "-" + (_date.getMonth() + 1) + "-" + _date.getDate();
+    const fileNameAll = 'AllDataBookings' + _currentDate;
+    const fileNameByPage = 'Page' + page + 'DataBookings' +  _currentDate;
+    const headerName = [{
+        A: 'Id',
+        B: 'UserName',
+        C: 'FilmName',
+        D: 'Status',
+        E: 'TotalPrice',
+        F: 'CreateAt',
+    }]
 
     // TuNT37 set page 
     useEffect(() => {
@@ -161,6 +178,19 @@ export default function Booking() {
         })
     };
 
+    useEffect(() => {
+        axios.get(`https://localhost:7113/api/Bookings/GetAllByPage?keySearch=${''}&page=${page - 1}&pageSize=${10000}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then((res)=>{
+                setCsvAllData(res.data.data.listItem)
+            })
+    }, [])
+
     // TuNT37 Get all record booking 
     const getRecords = (page, pageSize, keySearch) => {
         setLoading(true);
@@ -205,6 +235,7 @@ export default function Booking() {
                     })
                 }
                 setBookings(data);
+                setCsvData(res.data.data.listItem);
                 setTotalPage(res.data.data.totalCount);
                 setLoading(false);
             })
@@ -312,7 +343,8 @@ export default function Booking() {
             });
         getRecords(page, pageSize, keySearch);
         form.resetFields();
-        setFormData({ ...formData, filmId: null })
+        setFormData({ ...formData, filmId: null, scheduleId: null });
+        setSeats([])
         setIsShowCreate(false);
     }
 
@@ -373,12 +405,23 @@ export default function Booking() {
                                     className="ant-border-space"
                                 />
 
+                                {/* button export excel */}
+                                <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12" style={{ display:"flex", margin:'0px 0px 10px 10px' }}>
+                                    <div className="float-right" style={{ margin: '10px' }}>
+                                        <ExportBooking csvData={csvData} headerFile={headerName} fileName={fileNameByPage} buttonName={'ExportByPage'} />
+                                    </div>
+                                    <div className="float-right" style={{ margin: '10px' }}>
+                                        <ExportBooking csvData={csvAllData} headerFile={headerName} fileName={fileNameAll} buttonName={'ExportAllData'} />
+                                    </div>
+                                </div>
+
                                 {/* TuNT37  Modal create booking */}
                                 <Modal title='Create Booking' visible={isShowCreate}
                                     onOk={() => { form.validateFields().then(handleOk) }}
                                     onCancel={() => {
                                         setIsShowCreate(false);
-                                        setFormData({ ...formData, filmId: null });
+                                        setFormData({ ...formData, filmId: null, scheduleId: null });
+                                        setSeats([])
                                         form.resetFields();
                                     }}>
                                     <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 18 }} layout="horizontal" style={{ alignContent: "center" }} >
@@ -536,6 +579,7 @@ export default function Booking() {
                                     </Form>
                                 </Modal>
                             </div>
+
 
                         </Card>
                     </Col>
