@@ -32,6 +32,8 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // import Search from "antd/lib/transfer/search";
 import Search from "antd/lib/input/Search";
 import { UploadImageAPI } from "../assets/js/public";
+import moment from "moment";
+import dayjs from 'dayjs';
 
 const { Title } = Typography;
 const normFile = (e) => {
@@ -176,11 +178,11 @@ function User() {
     //Request API to disable user HungTD34
     const handleDeleteUser = async (id) => {
         var res = await axios.delete("https://localhost:7113/api/users/" + id,
-        {
-            headers: {
-                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-            }
-        })
+            {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            })
         console.log(res.data)
         if (res?.data?.code == 200) window.location.reload()
     }
@@ -200,11 +202,11 @@ function User() {
         data.dob = data.dob.toISOString()
 
         var res = await axios.post("https://localhost:7113/api/users/create", data,
-        {
-            headers: {
-                "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-            }
-        })
+            {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                }
+            })
         console.log(res)
         setIsModalOpen(false);
 
@@ -324,7 +326,11 @@ function User() {
                             rules={[{ required: true },
                             {
                                 type: 'email',
-                            },]}
+                            },
+                            {
+                                pattern: /^[a-zA-Z0-9.]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                                message: 'Email format wrong',
+                            }]}
                         >
                             <Input />
                         </Form.Item>
@@ -345,9 +351,20 @@ function User() {
                         </Form.Item>
                         <Form.Item style={{ display: "flex" }}>
                             <Form.Item label="Dob" name="dob"
-                                rules={[{ required: true }]}
+                                rules={[
+                                    {
+                                        required: true,
+                                    }]
+                                }
                             >
-                                <DatePicker style={{ width: "100%" }} onChange={(e) => handleChangeDob(e.toISOString())} />
+                                <DatePicker style={{ width: "100%" }} onChange={(e) => handleChangeDob(e.toISOString())}
+                                    disabledDate={(current) => current.isBefore(moment().subtract(100, "year"))
+                                        || current.isAfter(moment().subtract(15, "year"))
+                                    }
+                                // disabledDate={(current) => current.isAfter(dayjs(new Date().setFullYear(new Date().getFullYear() - 1)))
+                                // || current.isAfter(dayjs(new Date().setFullYear(new Date().getFullYear() - 15)))
+                                //}
+                                />
                             </Form.Item>
 
                             <Form.Item label="Role" name="role"

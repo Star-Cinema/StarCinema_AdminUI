@@ -19,10 +19,12 @@ function LineChart({dataRevenue}) {
   let listMonth = []
   for (let i = 0; i < 12; i++) {
     const date = new Date();
+    date.setDate(1)
     date.setMonth(date.getMonth() - i);
-    const month = date.toLocaleString('default', { month: 'long' }).slice(0, 3);
+    const month = date.toString().slice(4, 7);
     listMonth.push(month)
   }  
+  console.log(listMonth);
 
   //TuNT37 Line Chart
   const lineChart = {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Input, Space, Button, notification } from "antd";
+const token = sessionStorage.getItem("token")
 
 const RoomCrudComponent = () => {
     const [rooms, setRooms] = useState([]);
@@ -17,7 +18,13 @@ const RoomCrudComponent = () => {
     const fetchRooms = async () => {
         try {
             const response = await axios.get(
-                "https://localhost:7113/api/Room?PageIndex=0&PageSize=10&SortColumn=Name&SortOrder=ASC"
+                "https://localhost:7113/api/Room?PageIndex=0&PageSize=10&SortColumn=Name&SortOrder=ASC",
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
             ); // Replace with your API endpoint
             setRooms(response.data.data);
         } catch (error) {
