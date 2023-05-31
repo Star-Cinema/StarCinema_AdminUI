@@ -236,14 +236,14 @@ const RoomCrudComponent = () => {
                 <Input
                     placeholder="Enter room name"
                     value={newRoom.name}
-                    style={{ width: "91%", "margin-top": "0.5rem" }}
+                    style={{ width: "50%", "margin-top": "0.5rem" }}
                     onChange={(e) =>
                         setNewRoom({ ...newRoom, name: e.target.value })
                     }
                 />
                 <Button
                     type="primary"
-                    style={{ "margin-top": "0.5rem" }}
+                    style={{ "margin-top": "0.5rem", "margin-left": "0.5rem" }}
                     onClick={createRoom}
                 >
                     Create Room
