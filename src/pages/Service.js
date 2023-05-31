@@ -29,6 +29,7 @@ import axios from "axios";
 
 const Option = Select.Option;
 const { Text } = Typography;
+const token = sessionStorage.getItem("token")
 
 //styles
 const HeaderTableStyles = {
@@ -72,7 +73,7 @@ export default function Service() {
 
     const [loading, setLoading] = useState(false);
     const [totalItem, setTotalItem] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(5);
     const [page, setPage] = useState(1);
     const [keySearch, setKeySearch] = useState(''); // TuNT37 keyword search 
 
@@ -112,7 +113,13 @@ export default function Service() {
             okType: 'danger',
             cancelText: 'No',
             onOk: async () => {
-                await axios.delete(`https://localhost:7113/api/Service/DeleteService?id=${id}`);
+                await axios.delete(`https://localhost:7113/api/Service/DeleteService?id=${id}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 getRecords(page, pageSize);
             }
         });
@@ -121,7 +128,13 @@ export default function Service() {
     // TuNT37 Get all record booking 
     const getRecords = (page, pageSize) => {
         setLoading(true);
-        axios.get(`https://localhost:7113/api/Service/GetAllServices?keySearch=${keySearch}&page=${page-1}&pageSize=${pageSize}`)
+        axios.get(`https://localhost:7113/api/Service/GetAllServices?keySearch=${keySearch}&page=${page-1}&pageSize=${pageSize}`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then((res) => {
                 const data = [];
                 if (res.data != null) {
@@ -182,7 +195,13 @@ export default function Service() {
             price: values.price,
         }
         console.log('-form ', _formData);
-        await axios.put(`https://localhost:7113/api/Service/UpdateService`, _formData)
+        await axios.put(`https://localhost:7113/api/Service/UpdateService`, _formData,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
             console.log('response: ', response);
         });
@@ -197,7 +216,13 @@ export default function Service() {
             name: values.name,
             price: values.price,
         }
-        await axios.post(`https://localhost:7113/api/Service/CreateService`, _formData)
+        await axios.post(`https://localhost:7113/api/Service/CreateService`, _formData,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
             console.log('response: ', response);
         });
@@ -229,7 +254,7 @@ export default function Service() {
                                             </button>
                                         </div>
                                     </div>
-                                    <Button onClick={async () => await handleShowFormCreate()} style={{ background: "#237804", color: "#ffffff" }}>
+                                    <Button onClick={async () => await handleShowFormCreate()} className="ant-btn ant-btn-primary">
                                         <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
                                         Add
                                     </Button>
@@ -247,7 +272,7 @@ export default function Service() {
                                         pageSize: pageSize,
                                         total: totalItem,
                                         showSizeChanger: true,
-                                        pageSizeOptions: ['2', '5', '10', '20'],
+                                        pageSizeOptions: ['5', '10', '15'],
                                         onChange: (page, pageSize) => {
                                             setPage(page);
                                             setPageSize(pageSize);

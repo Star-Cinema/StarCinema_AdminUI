@@ -284,7 +284,7 @@ function User() {
                                 />
                             </div>
                         </Card>
-                        <Pagination defaultCurrent={1} total={9} onChange={(page) => setPage(page)} style={{ textAlign: "center" }} />
+                        <Pagination defaultCurrent={1} total={15} onChange={(page) => setPage(page)} style={{ textAlign: "center" }} />
                     </Col>
                 </Row>
 
@@ -365,6 +365,7 @@ function User() {
                                 // || current.isAfter(dayjs(new Date().setFullYear(new Date().getFullYear() - 15)))
                                 //}
                                 />
+
                             </Form.Item>
 
                             <Form.Item label="Role" name="role"
