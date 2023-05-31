@@ -17,7 +17,8 @@ import {
     Select,
     Space,
     message,
-    notification
+    notification,
+    InputNumber
 } from "antd";
 
 import '../assets/styles/schedulePage.css';
@@ -150,16 +151,21 @@ function SchedulesTable() {
             okType: 'danger',
             cancelText: 'No',
             onOk: () => {
-                axios.delete(`https://localhost:7113/api/Schedules/${id}`).then((response) => {
+                axios.delete(`https://localhost:7113/api/Schedules/${id}`,
+                {
+                  headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                  }
+                }).then((response) => {
                     messageApi.open({
                         type: 'success',
                         content: response.data?.message,
                     });
                     getRecords();
                 }).catch((error) => {
-                    messageApi.open({
-                        type: 'error',
-                        content: error.message,
+                    api['error']({
+                        message: 'Error',
+                        description: error.response?.data?.message
                     });
                 });
             }
@@ -169,9 +175,15 @@ function SchedulesTable() {
     const onAdd = () => {
         setIsShowForm(false)
         setIsAdding(false);
-        const startTime = form.getFieldValue('startTime')?.toISOString();
+        const startTime = form.getFieldValue('startTime')?.toISOString(7);
         const formData = { ...form.getFieldsValue(), startTime: startTime };
-        axios.post(`https://localhost:7113/api/Schedules`, formData)
+        axios.post(`https://localhost:7113/api/Schedules`, formData,
+        {
+          headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+            "Content-Type": "application/json",
+          }
+        })
             .then((response) => {
                 messageApi.open({
                     type: 'success',
@@ -362,7 +374,7 @@ function SchedulesTable() {
                                                     price: 0
                                                 })
                                             }}
-                                                style={{ background: "#237804", color: "#ffffff" }}>
+                                                className="ant-btn ant-btn-primary">
                                                 <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
                                                 Add
                                             </Button>
@@ -419,6 +431,7 @@ function SchedulesTable() {
                                             ]}
                                         >
                                             <Select name="filmId"
+                                                allowClear
                                                 placeholder="Select a film"
                                             >
                                                 {dataFilm?.map(item => (
@@ -436,6 +449,7 @@ function SchedulesTable() {
                                             ]}
                                         >
                                             <Select name="roomId"
+                                                allowClear
                                                 placeholder="Select a room"
                                             >
                                                 {dataRoom?.map(item => (
@@ -467,13 +481,15 @@ function SchedulesTable() {
                                                 {
                                                     required: true,
                                                     message: "Price is required",
+                                                },
+                                                {
+                                                    type: "number",
+                                                    min:10000,
+                                                    max: 10000000,
                                                 }
                                             ]}
                                         >
-                                            <Input
-                                                name="price"
-                                                type="number"
-                                            />
+                                            <InputNumber style={{width: '100%', borderRadius: '6px'}}/>
                                         </Form.Item>
 
                                     </Form>

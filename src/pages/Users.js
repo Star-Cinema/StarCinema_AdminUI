@@ -32,6 +32,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // import Search from "antd/lib/transfer/search";
 import Search from "antd/lib/input/Search";
 import { UploadImageAPI } from "../assets/js/public";
+import moment from "moment";
 
 const { Title } = Typography;
 const normFile = (e) => {
@@ -347,7 +348,12 @@ function User() {
                             <Form.Item label="Dob" name="dob"
                                 rules={[{ required: true }]}
                             >
-                                <DatePicker style={{ width: "100%" }} onChange={(e) => handleChangeDob(e.toISOString())} />
+                                <DatePicker style={{ width: "100%" }} onChange={(e) => handleChangeDob(e.toISOString())} 
+                                            disabledDate={(current) => {
+                                                let customDate = moment("2008-01-01").format("YYYY-MM-DD");
+                                                let customDate1 = moment("1900-01-01").format("YYYY-MM-DD");
+                                                return current && ((current > moment(customDate, "YYYY-MM-DD")) || (current < moment(customDate1, "YYYY-MM-DD")));
+                                              }} />
                             </Form.Item>
 
                             <Form.Item label="Role" name="role"

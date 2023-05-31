@@ -72,7 +72,7 @@ export default function Service() {
 
     const [loading, setLoading] = useState(false);
     const [totalItem, setTotalItem] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(5);
     const [page, setPage] = useState(1);
     const [keySearch, setKeySearch] = useState(''); // TuNT37 keyword search 
 
@@ -229,7 +229,7 @@ export default function Service() {
                                             </button>
                                         </div>
                                     </div>
-                                    <Button onClick={async () => await handleShowFormCreate()} style={{ background: "#237804", color: "#ffffff" }}>
+                                    <Button onClick={async () => await handleShowFormCreate()} className="ant-btn ant-btn-primary">
                                         <i className="fa-solid fa-plus" style={{ marginRight: 6 }}></i>
                                         Add
                                     </Button>
@@ -247,7 +247,7 @@ export default function Service() {
                                         pageSize: pageSize,
                                         total: totalItem,
                                         showSizeChanger: true,
-                                        pageSizeOptions: ['2', '5', '10', '20'],
+                                        pageSizeOptions: ['5', '10', '15'],
                                         onChange: (page, pageSize) => {
                                             setPage(page);
                                             setPageSize(pageSize);

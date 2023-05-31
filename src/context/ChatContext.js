@@ -16,48 +16,53 @@ export default function ChatProvider({ children }) {
 
   // Lấy danh sách người dùng đã nhắn tin tới admin
   useEffect(() => {
-      messageCollection
-        .orderBy('createAt', 'desc')
-        .onSnapshot((querySnapshot) => {
-          const userList = [];
-          querySnapshot.forEach((doc) => {
-            const messageData = doc.data();
-            const senderId = messageData.senderId == 'admin' ? messageData.receiverId : messageData.senderId;
+    messageCollection
+      .orderBy('createAt', 'desc')
+      .onSnapshot((querySnapshot) => {
+        const userList = [];
+        querySnapshot.forEach((doc) => {
+          const messageData = doc.data();
+          const senderId = messageData.senderId == 'admin' ? messageData.receiverId : messageData.senderId;
 
-            // Kiểm tra xem người dùng đã tồn tại trong danh sách chưa
-            const existingUser = userList.find((user) => user.id === senderId);
+          // Kiểm tra xem người dùng đã tồn tại trong danh sách chưa
+          const existingUser = userList.find((user) => user.id === senderId);
 
-            // Nếu người dùng không tồn tại, thêm vào danh sách
-            if (!existingUser) {
-              userList.push({
-                id: senderId,
-                lastMessage: {
-                  senderId: messageData.senderId,
-                  content: messageData.content
-                },
-              });
-            }
-          });
-          setUsersFireBase(userList);
+          // Nếu người dùng không tồn tại, thêm vào danh sách
+          if (!existingUser) {
+            userList.push({
+              id: senderId,
+              lastMessage: {
+                senderId: messageData.senderId,
+                content: messageData.content
+              },
+            });
+          }
         });
+        setUsersFireBase(userList);
+      });
   }, []);
 
-  useEffect(async () => {
-    try {
+  useEffect(() => {
 
-      var usesDatabase = await axios.get('https://localhost:7113/api/users?page=1&pageSize=10000&sortBy=id');
-      usesDatabase = usesDatabase?.data.data
+    axios.get('https://localhost:7113/api/users?page=1&pageSize=10000&sortBy=id',
+      {
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+        }
+      }
+    ).then((response) => {
+      var usesDatabase = response?.data.data
       const userList = [];
       console.log('ufb', usersFireBase);
       console.log('udb', usesDatabase);
       usersFireBase.forEach(userFB => {
         var user = usesDatabase.find(u => u.id == userFB.id);
-        user && userList.push({...user,...userFB});
+        user && userList.push({ ...user, ...userFB });
       })
       setUsers(userList);
-    } catch (e) {
-      console.log(e.message);
-    }
+    }).catch((e) => {
+      console.log(e.messages);
+    })
 
   }, [usersFireBase])
 
