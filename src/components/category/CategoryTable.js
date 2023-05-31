@@ -109,7 +109,10 @@ const CategoryTable = () => {
               <SearchOutlined style={{ fontSize: "150%", color: "#1890ff" }} />
             </Button>
           </Space>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} 
+          dataSource={data} 
+
+          />
         </>
       )}
     </>
