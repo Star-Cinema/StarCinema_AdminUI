@@ -299,7 +299,6 @@ const FilmUpdate = ({
                     message:
                       "Please input a valid positive interger number and duration must greater than 0!",
                   },
-                  { max: 50, message: 'Duration must be max 50 characters.' },
                 ]}
               >
                 <Input />
