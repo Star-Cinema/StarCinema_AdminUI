@@ -29,6 +29,7 @@ import axios from "axios";
 
 const Option = Select.Option;
 const { Text } = Typography;
+const token = sessionStorage.getItem("token")
 
 //styles
 const HeaderTableStyles = {
@@ -112,7 +113,13 @@ export default function Service() {
             okType: 'danger',
             cancelText: 'No',
             onOk: async () => {
-                await axios.delete(`https://localhost:7113/api/Service/DeleteService?id=${id}`);
+                await axios.delete(`https://localhost:7113/api/Service/DeleteService?id=${id}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 getRecords(page, pageSize);
             }
         });
@@ -121,7 +128,13 @@ export default function Service() {
     // TuNT37 Get all record booking 
     const getRecords = (page, pageSize) => {
         setLoading(true);
-        axios.get(`https://localhost:7113/api/Service/GetAllServices?keySearch=${keySearch}&page=${page-1}&pageSize=${pageSize}`)
+        axios.get(`https://localhost:7113/api/Service/GetAllServices?keySearch=${keySearch}&page=${page-1}&pageSize=${pageSize}`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then((res) => {
                 const data = [];
                 if (res.data != null) {
@@ -182,7 +195,13 @@ export default function Service() {
             price: values.price,
         }
         console.log('-form ', _formData);
-        await axios.put(`https://localhost:7113/api/Service/UpdateService`, _formData)
+        await axios.put(`https://localhost:7113/api/Service/UpdateService`, _formData,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
             console.log('response: ', response);
         });
@@ -197,7 +216,13 @@ export default function Service() {
             name: values.name,
             price: values.price,
         }
-        await axios.post(`https://localhost:7113/api/Service/CreateService`, _formData)
+        await axios.post(`https://localhost:7113/api/Service/CreateService`, _formData,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
             console.log('response: ', response);
         });
