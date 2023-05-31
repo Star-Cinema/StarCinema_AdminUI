@@ -14,7 +14,10 @@ II. Install
 2. Enter command: npm i
 3. Enter command: npm start
 
-
+III. Access Website StarCinema Admin
+1. Role Admin:
+  + Email: admin@gmail.com
+  + Password: 123456
 
 
 
