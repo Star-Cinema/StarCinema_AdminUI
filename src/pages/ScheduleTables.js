@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
 import dayjs from 'dayjs';
+import CalendarTest from '../components/calendar/CalendarTest';
 
 const Option = Select.Option;
 
@@ -106,6 +107,7 @@ function SchedulesTable() {
     const [selectedDate, setSelectedDate] = useState();
     const [messageApi, contextHolder] = message.useMessage();
     const [api, contextHolder1] = notification.useNotification();
+    const [schedulesOfRoomSelected, setSchedulesOfRoomSelected] = useState([]);
 
 
     const handleFilmChange = (value) => {
@@ -235,6 +237,18 @@ function SchedulesTable() {
                 });
             });;
     };
+    useEffect(() => {
+        if(selectedRoom) {
+            axios.get(`https://localhost:7113/api/Schedules?roomId=${selectedRoom}`).then(res => {
+                var listSchedule = [];
+                res.data.data.listItem.map(item => {
+                    listSchedule.push({title: item.film.name, start: item.startTime, end: item.endTime});
+                })
+                setSchedulesOfRoomSelected(listSchedule);
+            }).catch(e => console.log(e))
+
+        }
+    },[selectedRoom])
 
     // Get list of schedules AnhNT282
     const getRecords = () => {
@@ -516,6 +530,10 @@ function SchedulesTable() {
                     </Col>
                 </Row>
             </div>
+            {selectedRoom && ( <>
+            <h3 style={{textAlign: 'center'}}>Schedules of Room</h3>
+            <CalendarTest events={schedulesOfRoomSelected}/>
+            </>)}
         </>
     );
 }
