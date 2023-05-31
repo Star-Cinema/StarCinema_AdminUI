@@ -18,7 +18,9 @@ import {
     Modal,
     Form,
     Select,
-    Space
+    Space,
+    message,
+    notification
 } from "antd";
 
 import { DeleteOutlined, InfoOutlined } from "@ant-design/icons";
@@ -99,6 +101,8 @@ export default function Booking() {
 
     const [isShowInfo, setIsShowInfo] = useState(false);      // TuNT37 set show info booking detail
     const [isShowCreate, setIsShowCreate] = useState(false);  // TuNT37 set show form create 
+    const [messageApi, contextHolder] = message.useMessage();
+    const [api, contextHolder1] = notification.useNotification();
 
     // TuNT37 form data
     const [formData, setFormData] = useState({
@@ -133,8 +137,18 @@ export default function Booking() {
             okText: 'Yes',
             okType: 'danger',
             cancelText: 'No',
-            onOk: async () => {
-                await axios.delete(`https://localhost:7113/api/Bookings?id=${id}`);
+            onOk: () => {
+                axios.delete(`https://localhost:7113/api/Bookings?id=${id}`).then((response) => {
+                    messageApi.open({
+                        type: 'success',
+                        content: response.data?.message,
+                    });
+                }).catch((error) => {
+                    api['error']({
+                        message: 'Error',
+                        description: error.response?.data?.message
+                    });
+                });
                 getRecords(page, pageSize, keySearch);
             }
         });
@@ -249,8 +263,15 @@ export default function Booking() {
                 }
             })  // TuNT37 call api create booking 
             .then((response) => {
-                console.log('response: ', response);
-            });
+                messageApi.open({
+                    type: 'success',
+                    content: response.data?.message,
+                })}).catch((error) => {
+                    api['error']({
+                        message: 'Error',
+                        description: error.response?.data?.message
+                    });
+                });
         getRecords(page, pageSize, keySearch);
         form.resetFields();
         setFormData({ ...formData, filmId: null })
@@ -264,6 +285,8 @@ export default function Booking() {
 
     return (
         <>
+            {contextHolder}
+            {contextHolder1}
             <div className="tabled">
                 <Row gutter={[24, 0]}>
                     <Col xs="24" xl={24}>
@@ -275,7 +298,7 @@ export default function Booking() {
                                 <Space direction="horizontal">
                                     <div className="search-container">
                                         <div className="search-input-container">
-                                            <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKeySearch(e.target.value)}/>
+                                            <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKeySearch(e.target.value)} />
                                         </div>
                                         <div className="search-button-container">
                                             <button className="search-button" onClick={handleSearch}>
@@ -370,7 +393,7 @@ export default function Booking() {
                                             >
                                                 {schedules?.map(item => (
                                                     <Option value={item.id} key={item.id} name='scheduleId'>
-                                                        {item.startTime}
+                                                        {convertDateTime(item.startTime)}
                                                     </Option>
                                                 ))}
                                             </Select>

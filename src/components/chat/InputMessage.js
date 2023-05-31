@@ -2,9 +2,10 @@ import React, { useContext, useState } from "react";
 import { ChatContext } from "../../context/ChatContext";
 import firebase, { firestore } from "../../firebase/config";
 import { SendOutlined } from "@ant-design/icons";
+import { Input } from "antd";
 
 
-const Input = () => {
+const InputMessage = () => {
   const [text, setText] = useState("");
 
   const { selectedUser } = useContext(ChatContext);
@@ -33,33 +34,33 @@ const Input = () => {
   };
   return (
     <div className="input">
-      <input
+      {/* <input
         type="text"
         placeholder="Type something..."
         onChange={(e) => setText(e.target.value)}
         value={text}
-      />
-      <div className="send">
-        <input
-          type="file"
-          style={{ display: "none" }}
-          id="file"
+      /> */}
+          <Input
+          value={text}
+          onChange={(e) => {setText(e.target.value)}}
+          onPressEnter={handleSend}
+          placeholder='Type something...'
+          bordered={false}
+          autoComplete='off'
+          color=""
         />
-        {/* <button onClick={handleSend}>
-          Sen */}
+      <div className="send">
         <SendOutlined className="icon-send" onClick={handleSend}
           style={{
             fontSize: '32px',
-            marginLeft:"10px",
-            marginRight:"20px",
+            marginLeft: "10px",
+            marginRight: "20px",
             color: text ? "#007aec" : "#000000bd"
           }}
         />
-        {/* </button> */}
-        {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" xmlSpace="preserve"><path fill={true ? "#0066FF" : "#d7d7d7"} d="M22,11.7V12h-0.1c-0.1,1-17.7,9.5-18.8,9.1c-1.1-0.4,2.4-6.7,3-7.5C6.8,12.9,17.1,12,17.1,12H17c0,0,0-0.2,0-0.2c0,0,0,0,0,0c0-0.4-10.2-1-10.8-1.7c-0.6-0.7-4-7.1-3-7.5C4.3,2.1,22,10.5,22,11.7z" /></svg> */}
       </div>
     </div>
   );
 };
 
-export default Input;
+export default InputMessage;
