@@ -230,7 +230,7 @@ function SignIn() {
                     },
                   ]}
                 >
-                  <Input placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+                  <Input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                 </Form.Item>
 
                 {/* <Form.Item

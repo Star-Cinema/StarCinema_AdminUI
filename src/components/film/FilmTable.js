@@ -106,7 +106,7 @@ const FilmTable = () => {
       key: "image",
       render: (_, record) => (
         <Image
-          style={{ borderRadius: "10px" }}
+          style={{ borderRadius: "5px", objectFit:"cover", border:"1px solid" }}
           width={70}
           height={80}
           src={record.image}
@@ -226,7 +226,7 @@ const FilmTable = () => {
               style={{ background: "transparent" }}
               type="primary"
             >
-              {" "}
+              {/* {" "} */}
               <SearchOutlined style={{ fontSize: "150%", color: "#1890ff" }} />
             </Button>
           </Space>
