@@ -364,7 +364,7 @@ const FilmCreate = ({ loadData, listCategory }) => {
                     rules={[
                       {
                         required: true,
-                        message: "Missing area",
+                        message: "Please input the description!",
                       },
                       { max: 1000, message: 'Description must be max 1000 characters.' },
                     ]}
