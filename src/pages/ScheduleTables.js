@@ -126,7 +126,12 @@ function SchedulesTable() {
     useEffect(() => {
         (async () => {
             const dataFilmAPI = await axios.get(`https://localhost:7113/api/Films?page=0&pageSize=10000`);
-            const dataRoomAPI = await axios.get(`https://localhost:7113/api/Room?PageIndex=0&PageSize=100&SortColumn=Name&SortOrder=ASC`);
+            const dataRoomAPI = await axios.get(`https://localhost:7113/api/Room?PageIndex=0&PageSize=100&SortColumn=Name&SortOrder=ASC`, {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                    "Content-Type": "application/json",
+                }
+            });
             setDataFilm(dataFilmAPI.data.data.listItem)
             setDataRoom(dataRoomAPI.data.data)
         })()
@@ -155,7 +160,8 @@ function SchedulesTable() {
                 axios.delete(`https://localhost:7113/api/Schedules/${id}`,
                     {
                         headers: {
-                            "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+                            "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                            "Content-Type": "application/json",
                         }
                     }).then((response) => {
                         messageApi.open({
@@ -208,7 +214,13 @@ function SchedulesTable() {
         setIsEditing(false);
         const startTime = form.getFieldValue('startTime')?.toISOString();
         const formData = { ...form.getFieldsValue(), startTime: startTime };
-        axios.put(`https://localhost:7113/api/Schedules/${formData.id}`, formData)
+        axios.put(`https://localhost:7113/api/Schedules/${formData.id}`, formData,
+            {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                    "Content-Type": "application/json",
+                }
+            })
             .then((response) => {
                 messageApi.open({
                     type: 'success',
@@ -248,7 +260,7 @@ function SchedulesTable() {
                                 <>{item.room.name}</>
                             ),
                             price: (
-                                <>{item.ticket.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</>
+                                <>{item?.ticket?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</>
                             ),
                             startTime: (
                                 <>{convertDateTime(item.startTime)}</>
