@@ -343,7 +343,7 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
 
-        <Menu.Item key="12">
+        <Menu.Item key="14">
           <NavLink to="/chat">
            <span className="icon"><img src={chatIcon} style={{height: 20}} alt=""/></span>
             <span className="label">Chat</span>

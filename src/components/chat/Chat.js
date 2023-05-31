@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import Messages from "./Messages";
-import Input from "./Input";
+import Input from "./InputMessage";
 import { ChatContext } from "../../context/ChatContext";
 import avatarUserDefault from "../../assets/images/user.png"
 import styled from "styled-components";
@@ -37,27 +37,9 @@ const Chat = () => {
           </>)
         }
       </div>
-      <Messages />
-      {/* <SendMessageStyle>
-        <div className='typing'>
-          <div className="input-message">
-            <Input
-              // value={inputMessage}
-              // onChange={(e) => setInputMessage(e.target.value)}
-              // onPressEnter={handleSendMessage}
-              placeholder='Nhập tin nhắn...'
-              bordered={false}
-              autoComplete='off'
-            />
-          </div>
-          <div className="button-send" 
-          // onClick={handleSendMessage}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" xmlSpace="preserve"><path fill={true ? "#0066FF" : "#d7d7d7"} d="M22,11.7V12h-0.1c-0.1,1-17.7,9.5-18.8,9.1c-1.1-0.4,2.4-6.7,3-7.5C6.8,12.9,17.1,12,17.1,12H17c0,0,0-0.2,0-0.2c0,0,0,0,0,0c0-0.4-10.2-1-10.8-1.7c-0.6-0.7-4-7.1-3-7.5C4.3,2.1,22,10.5,22,11.7z" /></svg>
-          </div>
-        </div>
-      </SendMessageStyle> */}
-      <Input />
+      {selectedUser ? 
+      (<><Messages />
+      <Input /></>) : <img style={{margin: 'auto'}} src="https://chat.zalo.me/assets/quick-message-onboard.3950179c175f636e91e3169b65d1b3e2.png" alt="background-image"></img>}
     </div>
   );
 };

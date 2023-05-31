@@ -18,7 +18,9 @@ import {
     Modal,
     Form,
     Select,
-    Space
+    Space,
+    message,
+    notification
 } from "antd";
 
 import { DeleteOutlined, InfoOutlined } from "@ant-design/icons";
@@ -99,6 +101,8 @@ export default function Booking() {
 
     const [isShowInfo, setIsShowInfo] = useState(false);      // TuNT37 set show info booking detail
     const [isShowCreate, setIsShowCreate] = useState(false);  // TuNT37 set show form create 
+    const [messageApi, contextHolder] = message.useMessage();
+    const [api, contextHolder1] = notification.useNotification();
 
     // TuNT37 form data
     const [formData, setFormData] = useState({
@@ -133,29 +137,40 @@ export default function Booking() {
             okText: 'Yes',
             okType: 'danger',
             cancelText: 'No',
-            onOk: async () => {
-                await axios.delete(`https://localhost:7113/api/Bookings?id=${id}`, 
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+            onOk: () => {
+                axios.delete(`https://localhost:7113/api/Bookings?id=${id}`,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
                     }
+                ).then((response) => {
+                    messageApi.open({
+                        type: 'success',
+                        content: response.data?.message,
+                    });
+                    getRecords(page, pageSize, keySearch);
+                }).catch((error) => {
+                    api['error']({
+                        message: 'Error',
+                        description: error.response?.data?.message
+                    });
                 });
-                getRecords(page, pageSize, keySearch);
             }
-        });
-    }
+        })
+    };
 
     // TuNT37 Get all record booking 
     const getRecords = (page, pageSize, keySearch) => {
         setLoading(true);
         axios.get(`https://localhost:7113/api/Bookings/GetAllByPage?keySearch=${keySearch}&page=${page - 1}&pageSize=${pageSize}`,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        })
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             .then((res) => {
                 const data = [];
                 if (res.data != null) {
@@ -183,7 +198,6 @@ export default function Booking() {
                             actions: (
                                 <>
                                     <InfoOutlined onClick={async () => await handleShowInfo(item.id)} style={{ fontSize: 18, cursor: "pointer", marginRight: 10 }} ></InfoOutlined>
-                                    {/* <EditTwoTone onClick={async () => await handleShowFormCreate()} style={{ fontSize: 18, cursor: "pointer" }}></EditTwoTone> */}
                                     <DeleteOutlined onClick={() => onDelete(item.id)} style={{ fontSize: 18, color: "red", marginLeft: 12, cursor: "pointer" }}></DeleteOutlined>
                                 </>
                             )
@@ -198,65 +212,65 @@ export default function Booking() {
 
     // TuNT37 Get Schedule by FilmId
     useEffect(() => {
-        if (!formData.filmId)
+        if (formData.filmId)
             axios.get(`https://localhost:7113/api/Schedules?filmId=${formData.filmId}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }).then((response) => {
+                    setSchedules(response.data.data.listItem);
+                });
+    }, [formData.filmId])
+
+    // TuNT37 Get Seat Not booked by filmId and scheduleId
+    useEffect(() => {
+        axios.get(`https://localhost:7113/api/Bookings/GetSeatsNotBooked?filmId=${formData.filmId}&scheduleId=${formData.scheduleId}`,
             {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
             }).then((response) => {
-                    setSchedules(response.data.data.listItem);
-            });
-    }, [formData.filmId])
-
-    // TuNT37 Get Seat Not booked by filmId and scheduleId
-    useEffect(() => {
-        axios.get(`https://localhost:7113/api/Bookings/GetSeatsNotBooked?filmId=${formData.filmId}&scheduleId=${formData.scheduleId}`,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        }).then((response) => {
                 setSeats(response.data.data);
-        });
+            });
     }, [formData.scheduleId])
 
     // TuNT37 handle show modal detail booking
     const handleShowInfo = async (id) => {
         await axios.get(`https://localhost:7113/api/Bookings/${id}`,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        }).then((response) => {
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then((response) => {
                 setBooking(response.data.data);
-        });
+            });
         setIsShowInfo(true);
     }
 
     // TuNT37 handle show modal form create booking
     const handleShowFormCreate = async () => {
         await axios.get("https://localhost:7113/api/Bookings/GetAllFilms",
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        }).then((response) => {
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then((response) => {
                 setFilms(response.data.data);
-        });
+            });
         await axios.get(`https://localhost:7113/api/Service/GetAllServices?page=0&pageSize=1000`,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        }).then((response) => {
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then((response) => {
                 setServices(response.data.data.listItem);
-        });
+            });
         await setIsShowCreate(true);
     }
 
@@ -286,7 +300,15 @@ export default function Booking() {
                 }
             })  // TuNT37 call api create booking 
             .then((response) => {
-                console.log('response: ', response);
+                messageApi.open({
+                    type: 'success',
+                    content: response.data?.message,
+                })
+            }).catch((error) => {
+                api['error']({
+                    message: 'Error',
+                    description: error.response?.data?.message
+                });
             });
         getRecords(page, pageSize, keySearch);
         form.resetFields();
@@ -301,6 +323,8 @@ export default function Booking() {
 
     return (
         <>
+            {contextHolder}
+            {contextHolder1}
             <div className="tabled">
                 <Row gutter={[24, 0]}>
                     <Col xs="24" xl={24}>
@@ -312,7 +336,7 @@ export default function Booking() {
                                 <Space direction="horizontal">
                                     <div className="search-container">
                                         <div className="search-input-container">
-                                            <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKeySearch(e.target.value)}/>
+                                            <input type="text" className="search-input" placeholder="Search" onChange={(e) => setKeySearch(e.target.value)} />
                                         </div>
                                         <div className="search-button-container">
                                             <button className="search-button" onClick={handleSearch}>
@@ -407,7 +431,7 @@ export default function Booking() {
                                             >
                                                 {schedules?.map(item => (
                                                     <Option value={item.id} key={item.id} name='scheduleId'>
-                                                        {item.startTime}
+                                                        {convertDateTime(item.startTime)}
                                                     </Option>
                                                 ))}
                                             </Select>
@@ -519,8 +543,8 @@ export default function Booking() {
             </div>
         </>
     );
+
+
 }
-
-
 
 

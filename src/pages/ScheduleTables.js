@@ -26,6 +26,7 @@ import { DeleteOutlined, EditTwoTone, } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import dayjs from 'dayjs';
 
 const Option = Select.Option;
 
@@ -125,7 +126,12 @@ function SchedulesTable() {
     useEffect(() => {
         (async () => {
             const dataFilmAPI = await axios.get(`https://localhost:7113/api/Films?page=0&pageSize=10000`);
-            const dataRoomAPI = await axios.get(`https://localhost:7113/api/Room?PageIndex=0&PageSize=100&SortColumn=Name&SortOrder=ASC`);
+            const dataRoomAPI = await axios.get(`https://localhost:7113/api/Room?PageIndex=0&PageSize=100&SortColumn=Name&SortOrder=ASC`, {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                    "Content-Type": "application/json",
+                }
+            });
             setDataFilm(dataFilmAPI.data.data.listItem)
             setDataRoom(dataRoomAPI.data.data)
         })()
@@ -152,24 +158,23 @@ function SchedulesTable() {
             cancelText: 'No',
             onOk: () => {
                 axios.delete(`https://localhost:7113/api/Schedules/${id}`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-                    }
-                }).then((response) => {
-                    messageApi.open({
-                        type: 'success',
-                        content: response.data?.message,
+                    {
+                        headers: {
+                            "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                            "Content-Type": "application/json",
+                        }
+                    }).then((response) => {
+                        messageApi.open({
+                            type: 'success',
+                            content: response.data?.message,
+                        });
+                        getRecords();
+                    }).catch((error) => {
+                        api['error']({
+                            message: 'Error',
+                            description: error.response?.data?.message
+                        });
                     });
-                    getRecords();
-                }).catch((error) => {
-
-                    api['error']({
-                        message: 'Error',
-                        description: error.response?.data?.message
-                    });
-                });
             }
         });
     }
@@ -177,15 +182,18 @@ function SchedulesTable() {
     const onAdd = () => {
         setIsShowForm(false)
         setIsAdding(false);
-        const startTime = form.getFieldValue('startTime')?.toISOString(7);
+        let startTime = new Date(form.getFieldValue('startTime'));
+        startTime.setHours(startTime.getHours() + 7);
+        console.log(startTime.toISOString());
+
         const formData = { ...form.getFieldsValue(), startTime: startTime };
         axios.post(`https://localhost:7113/api/Schedules`, formData,
-        {
-          headers: {
-            "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
-            "Content-Type": "application/json",
-          }
-        })
+            {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                    "Content-Type": "application/json",
+                }
+            })
             .then((response) => {
                 messageApi.open({
                     type: 'success',
@@ -206,7 +214,13 @@ function SchedulesTable() {
         setIsEditing(false);
         const startTime = form.getFieldValue('startTime')?.toISOString();
         const formData = { ...form.getFieldsValue(), startTime: startTime };
-        axios.put(`https://localhost:7113/api/Schedules/${formData.id}`, formData)
+        axios.put(`https://localhost:7113/api/Schedules/${formData.id}`, formData,
+            {
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`,
+                    "Content-Type": "application/json",
+                }
+            })
             .then((response) => {
                 messageApi.open({
                     type: 'success',
@@ -466,7 +480,7 @@ function SchedulesTable() {
                                                 name="startTime"
                                                 format={'DD/MM/YYYY HH:mm'}
                                                 showTime
-                                                disabledDate={(current) => current.isBefore(moment())}
+                                                disabledDate={(current) => current.isBefore(dayjs(new Date().setDate(new Date().getDate() - 1)))}
                                                 style={{
                                                     height: "auto",
                                                     width: "auto",
@@ -486,12 +500,12 @@ function SchedulesTable() {
                                                 },
                                                 {
                                                     type: "number",
-                                                    min:10000,
+                                                    min: 10000,
                                                     max: 10000000,
                                                 }
                                             ]}
                                         >
-                                            <InputNumber style={{width: '100%', borderRadius: '6px'}}/>
+                                            <InputNumber style={{ width: '100%', borderRadius: '6px' }} />
                                         </Form.Item>
 
                                     </Form>
