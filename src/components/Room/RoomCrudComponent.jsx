@@ -4,7 +4,9 @@ import { Table, Input, Space, Button, notification } from "antd";
 
 const RoomCrudComponent = () => {
     const [rooms, setRooms] = useState([]);
+    const [roomApis, setRoomApis] = useState([]);
     const [newRoom, setNewRoom] = useState({ name: "", isDelete: false });
+    var token = sessionStorage.getItem("token");
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 5,
@@ -17,8 +19,20 @@ const RoomCrudComponent = () => {
     const fetchRooms = async () => {
         try {
             const response = await axios.get(
-                "https://localhost:7113/api/Room?PageIndex=0&PageSize=10&SortColumn=Name&SortOrder=ASC"
+                "https://localhost:7113/api/Room?PageIndex=0&PageSize=10&SortColumn=Name&SortOrder=ASC",
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
             ); // Replace with your API endpoint
+            const newArr = response.data.data.map((item) => {
+                // Perform transformation or manipulation on each item
+                const { id, name } = item;
+                return { id, name }; // Doubles each item in the original array
+            });
+            setRoomApis(newArr);
             setRooms(response.data.data);
         } catch (error) {
             console.error("Error fetching rooms:", error);
@@ -31,13 +45,26 @@ const RoomCrudComponent = () => {
             if (index === -1) {
                 const response = await axios.post(
                     "https://localhost:7113/api/Room",
-                    newRoom
+                    newRoom,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 ); // Replace with your API endpoint
                 //   setRooms([...rooms, response.data]);
                 const responsee = await axios.get(
-                    "https://localhost:7113/api/Room?PageIndex=0&PageSize=10&SortColumn=Name&SortOrder=ASC"
+                    "https://localhost:7113/api/Room?PageIndex=0&PageSize=10&SortColumn=Name&SortOrder=ASC",
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 ); // Replace with your API endpoint
                 setRooms(responsee.data.data);
+                // setRoomApis([...responsee.data.data]);
                 setNewRoom({ name: "", isDelete: false });
                 notification.open({
                     message: "Notification",
@@ -74,12 +101,13 @@ const RoomCrudComponent = () => {
                 newArr[index].name = updatedRoom.name; // Update the desired property directly
             }
             setRooms([...newArr]);
+            console.log("data normal: ", rooms);
+            console.log("data api: ", roomApis);
         } catch (error) {
             console.error("Error updating room:", error);
         }
     };
     const handleFormSubmit = async (roomId, name) => {
-        console.log("id: ", name);
         if (name === null) {
             notification.open({
                 message: "Notification",
@@ -88,7 +116,10 @@ const RoomCrudComponent = () => {
                 placement: "topRight",
             });
         } else {
-            const index = rooms.findIndex((item) => item.name === name);
+            const index = roomApis.findIndex((item) => item.name === name);
+            // console.log("data api: ", roomApis);
+            // console.log("index: ", index);
+            // console.log("name: ", name);
             if (index === -1) {
                 try {
                     const r = {
@@ -96,7 +127,12 @@ const RoomCrudComponent = () => {
                         name: name,
                         isDelete: false,
                     };
-                    await axios.put(`https://localhost:7113/api/Room`, r); // Replace with your API endpoint
+                    await axios.put(`https://localhost:7113/api/Room`, r, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }); // Replace with your API endpoint
                     notification.open({
                         message: "Notification",
                         description: "Update Room successfully!",
@@ -118,7 +154,7 @@ const RoomCrudComponent = () => {
                 notification.open({
                     message: "Notification",
                     description:
-                        "Edit Room unsuccessfully, duplicate data, please re-enter!",
+                        "Edit Room failed, Value is not null and not duplicate data, please re-enter!",
                     duration: 3,
                     placement: "topRight",
                 });
@@ -128,7 +164,12 @@ const RoomCrudComponent = () => {
     const deleteRoom = async (roomId) => {
         console.log("room" + roomId);
         try {
-            await axios.delete(`https://localhost:7113/api/Room?id=${roomId}`); // Replace with your API endpoint
+            await axios.delete(`https://localhost:7113/api/Room?id=${roomId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            }); // Replace with your API endpoint
             const updatedRooms = rooms.filter((room) => room.id !== roomId);
             setRooms(updatedRooms);
             notification.open({
