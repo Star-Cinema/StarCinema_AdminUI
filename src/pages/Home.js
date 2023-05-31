@@ -29,6 +29,7 @@ import LineChart from "../components/chart/LineChart";
 
 function Home() {
   const { Title, Text } = Typography;
+  const token = sessionStorage.getItem("token")
 
   // TuNT37 Get current month
   const _date = new Date();
@@ -131,7 +132,13 @@ function Home() {
 
   // TuNT37 Api Get statistical of dashboard
   useEffect(() => {
-    axios.get('https://localhost:7113/api/Bookings/GetStatistical',)
+    axios.get('https://localhost:7113/api/Bookings/GetStatistical',
+    {
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+      }
+    })
         .then((response) => {
             setStatistical(response.data.data);
             console.log('a ', response.data.data);
@@ -176,7 +183,13 @@ function Home() {
   const [dataRevenue, setDataRevenue] = useState({});   
   // Api get GetRevenue12Month
   useEffect(async () => {
-    await axios.get('https://localhost:7113/api/Bookings/GetRevenue12Month',)
+    await axios.get('https://localhost:7113/api/Bookings/GetRevenue12Month',
+    {
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+      }
+    })
         .then((response) => {
           setDataRevenue(response.data.data);
             console.log('setDataRevenue ', response.data.data);

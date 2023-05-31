@@ -134,7 +134,13 @@ export default function Booking() {
             okType: 'danger',
             cancelText: 'No',
             onOk: async () => {
-                await axios.delete(`https://localhost:7113/api/Bookings?id=${id}`);
+                await axios.delete(`https://localhost:7113/api/Bookings?id=${id}`, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 getRecords(page, pageSize, keySearch);
             }
         });
@@ -143,7 +149,13 @@ export default function Booking() {
     // TuNT37 Get all record booking 
     const getRecords = (page, pageSize, keySearch) => {
         setLoading(true);
-        axios.get(`https://localhost:7113/api/Bookings/GetAllByPage?keySearch=${keySearch}&page=${page - 1}&pageSize=${pageSize}`)
+        axios.get(`https://localhost:7113/api/Bookings/GetAllByPage?keySearch=${keySearch}&page=${page - 1}&pageSize=${pageSize}`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then((res) => {
                 const data = [];
                 if (res.data != null) {
@@ -187,39 +199,64 @@ export default function Booking() {
     // TuNT37 Get Schedule by FilmId
     useEffect(() => {
         if (!formData.filmId)
-            axios.get(`https://localhost:7113/api/Schedules?filmId=${formData.filmId}`)
-                .then((response) => {
+            axios.get(`https://localhost:7113/api/Schedules?filmId=${formData.filmId}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then((response) => {
                     setSchedules(response.data.data.listItem);
-                });
+            });
     }, [formData.filmId])
 
     // TuNT37 Get Seat Not booked by filmId and scheduleId
     useEffect(() => {
-        axios.get(`https://localhost:7113/api/Bookings/GetSeatsNotBooked?filmId=${formData.filmId}&scheduleId=${formData.scheduleId}`)
-            .then((response) => {
+        axios.get(`https://localhost:7113/api/Bookings/GetSeatsNotBooked?filmId=${formData.filmId}&scheduleId=${formData.scheduleId}`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
                 setSeats(response.data.data);
-            });
+        });
     }, [formData.scheduleId])
 
     // TuNT37 handle show modal detail booking
     const handleShowInfo = async (id) => {
-        await axios.get(`https://localhost:7113/api/Bookings/${id}`)
-            .then((response) => {
+        await axios.get(`https://localhost:7113/api/Bookings/${id}`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
                 setBooking(response.data.data);
-            });
+        });
         setIsShowInfo(true);
     }
 
     // TuNT37 handle show modal form create booking
     const handleShowFormCreate = async () => {
-        await axios.get("https://localhost:7113/api/Bookings/GetAllFilms",)
-            .then((response) => {
+        await axios.get("https://localhost:7113/api/Bookings/GetAllFilms",
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
                 setFilms(response.data.data);
-            });
-        await axios.get(`https://localhost:7113/api/Service/GetAllServices?page=0&pageSize=1000`)
-            .then((response) => {
+        });
+        await axios.get(`https://localhost:7113/api/Service/GetAllServices?page=0&pageSize=1000`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((response) => {
                 setServices(response.data.data.listItem);
-            });
+        });
         await setIsShowCreate(true);
     }
 
