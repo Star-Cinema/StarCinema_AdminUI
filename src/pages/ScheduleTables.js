@@ -149,6 +149,17 @@ function SchedulesTable() {
         getRecords();
     }, [page])
 
+    const getSchedulesOfRoom = () => {
+        if(selectedRoom) {
+            axios.get(`https://localhost:7113/api/Schedules?roomId=${selectedRoom}`).then(res => {
+                var listSchedule = [];
+                res.data.data.listItem.map(item => {
+                    listSchedule.push({title: item.film.name, start: item.startTime, end: item.endTime});
+                })
+                setSchedulesOfRoomSelected(listSchedule);
+            }).catch(e => console.log(e))
+    }
+
 
 
     // handle delete scheduled AnhNT282
@@ -171,6 +182,7 @@ function SchedulesTable() {
                             content: response.data?.message,
                         });
                         getRecords();
+                        getSchedulesOfRoom();
                     }).catch((error) => {
                         api['error']({
                             message: 'Error',
@@ -202,6 +214,7 @@ function SchedulesTable() {
                     content: 'Successfully added'
                 });
                 getRecords();
+                getSchedulesOfRoom();
 
             }).catch((error) => {
                 api['error']({
@@ -229,6 +242,7 @@ function SchedulesTable() {
                     content: 'Successfully edited'
                 });
                 getRecords();
+                getSchedulesOfRoom();
 
             }).catch((error) => {
                 api['error']({
@@ -237,17 +251,9 @@ function SchedulesTable() {
                 });
             });;
     };
+    
     useEffect(() => {
-        if(selectedRoom) {
-            axios.get(`https://localhost:7113/api/Schedules?roomId=${selectedRoom}`).then(res => {
-                var listSchedule = [];
-                res.data.data.listItem.map(item => {
-                    listSchedule.push({title: item.film.name, start: item.startTime, end: item.endTime});
-                })
-                setSchedulesOfRoomSelected(listSchedule);
-            }).catch(e => console.log(e))
-
-        }
+        getSchedulesOfRoom();
     },[selectedRoom])
 
     // Get list of schedules AnhNT282
