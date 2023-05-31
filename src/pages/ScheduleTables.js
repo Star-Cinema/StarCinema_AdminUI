@@ -153,9 +153,10 @@ function SchedulesTable() {
             onOk: () => {
                 axios.delete(`https://localhost:7113/api/Schedules/${id}`,
                 {
-                  headers: {
-                    "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-                  }
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                    }
                 }).then((response) => {
                     messageApi.open({
                         type: 'success',
@@ -163,6 +164,7 @@ function SchedulesTable() {
                     });
                     getRecords();
                 }).catch((error) => {
+
                     api['error']({
                         message: 'Error',
                         description: error.response?.data?.message
@@ -244,7 +246,7 @@ function SchedulesTable() {
                                 <>{item.room.name}</>
                             ),
                             price: (
-                                <>{item.ticket.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</>
+                                <>{item?.ticket?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</>
                             ),
                             startTime: (
                                 <>{convertDateTime(item.startTime)}</>

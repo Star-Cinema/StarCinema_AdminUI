@@ -62,7 +62,7 @@ const FilmTable = () => {
     filmAPI.data.listItem.map((c, key) => {
       data.push({
         key: key,
-        image: c.images[0].path,
+        image: c?.images[0]?.path,
         id: c.id,
         name: c.name,
         categoryId: c.category.id,
