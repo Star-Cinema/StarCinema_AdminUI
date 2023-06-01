@@ -150,14 +150,15 @@ function SchedulesTable() {
     }, [page])
 
     const getSchedulesOfRoom = () => {
-        if(selectedRoom) {
+        if (selectedRoom) {
             axios.get(`https://localhost:7113/api/Schedules?roomId=${selectedRoom}`).then(res => {
                 var listSchedule = [];
                 res.data.data.listItem.map(item => {
-                    listSchedule.push({title: item.film.name, start: item.startTime, end: item.endTime});
+                    listSchedule.push({ title: item.film.name, start: item.startTime, end: item.endTime });
                 })
                 setSchedulesOfRoomSelected(listSchedule);
             }).catch(e => console.log(e))
+        }
     }
 
 
@@ -251,10 +252,10 @@ function SchedulesTable() {
                 });
             });;
     };
-    
+
     useEffect(() => {
         getSchedulesOfRoom();
-    },[selectedRoom])
+    }, [selectedRoom])
 
     // Get list of schedules AnhNT282
     const getRecords = () => {
@@ -536,9 +537,9 @@ function SchedulesTable() {
                     </Col>
                 </Row>
             </div>
-            {selectedRoom && ( <>
-            <h3 style={{textAlign: 'center'}}>Schedules of Room</h3>
-            <CalendarTest events={schedulesOfRoomSelected}/>
+            {selectedRoom && (<>
+                <h3 style={{ textAlign: 'center' }}>Schedules of Room</h3>
+                <Card><CalendarTest events={schedulesOfRoomSelected} /></Card>
             </>)}
         </>
     );
