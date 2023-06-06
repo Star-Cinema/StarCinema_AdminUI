@@ -5,18 +5,13 @@
 //Created On : 22/05/2023
 //Last Modified On : 24/05/2023
 //Copy Rights : FA Academy
-//Description : 
+//Description :
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import {
-  Card,
-  Col,
-  Row,
-  Typography,
-} from "antd";
+import { Card, Col, Row, Typography } from "antd";
 import {
   ToTopOutlined,
   MenuUnfoldOutlined,
@@ -26,23 +21,24 @@ import {
 
 import LineChart from "../components/chart/LineChart";
 
-
 function Home() {
   const { Title, Text } = Typography;
-  const token = sessionStorage.getItem("token")
+  const token = sessionStorage.getItem("token");
 
   // TuNT37 Get current month
   const _date = new Date();
-  let month = _date.getMonth() + 1 ;
+  let month = _date.getMonth() + 1;
 
-  const [statistical, setStatistical] = useState({});   // TuNT37 Statistical 
+  const [statistical, setStatistical] = useState({}); // TuNT37 Statistical
 
   // TuNT37 convert to format Money
-  const covertMoney = vnd => {
-    return vnd && vnd.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-  }
+  const covertMoney = (vnd) => {
+    return (
+      vnd && vnd.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+    );
+  };
 
-  // TuNT37 Icon 
+  // TuNT37 Icon
   const dollor = [
     <svg
       width="22"
@@ -132,19 +128,20 @@ function Home() {
 
   // TuNT37 Api Get statistical of dashboard
   useEffect(() => {
-    axios.get('https://localhost:7113/api/Bookings/GetStatistical',
-    {
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-      }
-    })
-        .then((response) => {
-            setStatistical(response.data.data);
-            console.log('a ', response.data.data);
-        }).catch((error) => {
-            console.log(error.response.data)
-        });
+    axios
+      .get("https://localhost:7113/api/Bookings/GetStatistical", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setStatistical(response.data.data);
+        console.log("a ", response.data.data);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   }, []);
 
   // TuNT37  List Revenue to retrive
@@ -152,57 +149,66 @@ function Home() {
     {
       title: `Total Revenue Of Month ${month}`,
       revenue: `${covertMoney(statistical.totalRevenueByMonth)}`,
-      persent: statistical.percentRevenueGrowthPrice >= 0 ? `+${statistical.percentRevenueGrowthPrice}%` : `${statistical.percentRevenueGrowthPrice}%`,
+      persent:
+        statistical.percentRevenueGrowthPrice >= 0
+          ? `+${statistical.percentRevenueGrowthPrice}%`
+          : `${statistical.percentRevenueGrowthPrice}%`,
       icon: dollor,
       bnb: statistical.percentRevenueGrowthPrice > 0 ? "bnb2" : "redtext",
     },
     {
       title: `Revenue Service Of Month ${month}`,
       revenue: `${covertMoney(statistical.totalRevenueServicesByMonth)}`,
-      persent:  statistical.percentRevenueGrowthServices >= 0 ? `+${statistical.percentRevenueGrowthServices}%` : `${statistical.percentRevenueGrowthServices}%`,
+      persent:
+        statistical.percentRevenueGrowthServices >= 0
+          ? `+${statistical.percentRevenueGrowthServices}%`
+          : `${statistical.percentRevenueGrowthServices}%`,
       icon: dollor,
       bnb: statistical.percentRevenueGrowthServices > 0 ? "bnb2" : "redtext",
     },
     {
       title: `Revenue Ticket Of Month ${month}`,
       revenue: `${covertMoney(statistical.totalRevenueTicketsByMonth)}`,
-      persent:  statistical.percentRevenueGrowthTicket >= 0 ? `+${statistical.percentRevenueGrowthTicket}%` : `${statistical.percentRevenueGrowthTicket}%`,
+      persent:
+        statistical.percentRevenueGrowthTicket >= 0
+          ? `+${statistical.percentRevenueGrowthTicket}%`
+          : `${statistical.percentRevenueGrowthTicket}%`,
       icon: dollor,
       bnb: statistical.percentRevenueGrowthTicket > 0 ? "bnb2" : "redtext",
     },
     {
       title: "Total Revenue Ticket & Services",
       revenue: `${covertMoney(statistical.totalRevenue)}`,
-      persent:  '' ,
+      persent: "",
       icon: dollor,
       bnb: statistical.percentRevenueGrowthPrice > 0 ? "bnb2" : "redtext",
-    }
+    },
   ];
 
   // TuNT37 State Data Revenue
-  const [dataRevenue, setDataRevenue] = useState({});   
+  const [dataRevenue, setDataRevenue] = useState({});
   // Api get GetRevenue12Month
   useEffect(async () => {
-    await axios.get('https://localhost:7113/api/Bookings/GetRevenue12Month',
-    {
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-      }
-    })
-        .then((response) => {
-          setDataRevenue(response.data.data);
-            console.log('setDataRevenue ', response.data.data);
-        }).catch((error) => {
-            console.log(error.response.data)
-        });
+    await axios
+      .get("https://localhost:7113/api/Bookings/GetRevenue12Month", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setDataRevenue(response.data.data);
+        console.log("setDataRevenue ", response.data.data);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   }, []);
 
   return (
     <>
       <div className="layout-content">
         <Row className="rowgap-vbox" gutter={[24, 0]}>
-
           {/* Loop retrive data statistical revenue */}
           {count.map((c, index) => (
             <Col
@@ -217,9 +223,15 @@ function Home() {
               <Card bordered={false} className="criclebox ">
                 <div className="number">
                   <Row align="middle" gutter={[24, 0]}>
-                    <Col xs={18} style={{minHeight: '120px'}}>
+                    <Col
+                      xs={18}
+                      style={{
+                        // minHeight: '120px',
+                        margin: "auto",                        
+                      }}
+                    >
                       <span>{c.title}</span>
-                      <Title level={3} style={{fontSize: '1.5rem'}}>
+                      <Title level={3} style={{ fontSize: "1.5rem" }}>
                         {c.revenue} <small className={c.bnb}>{c.persent}</small>
                       </Title>
                     </Col>
@@ -235,9 +247,8 @@ function Home() {
 
         {/* TuNT37 revenue chart */}
         <Card bordered={false} className="criclebox h-full">
-            <LineChart dataRevenue={dataRevenue}/>
+          <LineChart dataRevenue={dataRevenue} />
         </Card>
-
       </div>
     </>
   );
